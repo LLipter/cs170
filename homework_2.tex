@@ -159,26 +159,44 @@ By \eqref{eq2} - \eqref{eq1}, we have
   \section{Recurrence Relations}
  Master theorem:
  
-Suppose $a, b, c \in \mathbb{R}^+$, $b > 1$ and $T[1]=1$
+Suppose $a, b, c \in \mathbb{R}^+$, $b > 1$ and $T(1)=1$
 
 Given
  \begin{equation*}
- T[n] = aT[\frac{n}{b}] + O(n^c),
+ T(n) = aT(\frac{n}{b}) + \Theta(n^c),
  \end{equation*}
  
  We have
 \[
  T[n]=\left\{
 \begin{array}{lcl}
-O(n^{\log_ba})      &      & c < \log_ba\\
-O(n^c\log_2n)    &      & c = \log_ba\\
-O(n^c)     &      & c > \log_ba\\
+\Theta(n^{\log_ba})      &      & c < \log_ba\\
+\Theta(n^c\log_2n)    &      & c = \log_ba\\
+\Theta(n^c)     &      & c > \log_ba\\
 \end{array} \right. 
 \]
 
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \begin{enumerate}
-	\item a
+	\item 
+	Let $a=4, b=2, c=1$. Since $\log_ba = log_2 4 = 2 > c$, $T(n) = \Theta(n^{\log_ba}) = O(n^2)$.
+	\item 
+	Let $a=4, b=3, c=2$. Since $\log_ba = log_3 4 < c$, $T(n) = \Theta(n^c) = O(n^2)$.
+	\item
+	\begin{align*}
+		T(n) &= T(\sqrt{n}) + 1 \\
+			&= T(n^\frac{1}{2^1}) + 1 \\
+			&= T(n^\frac{1}{2^2}) + 1 + 1 \\
+			&= T(n^\frac{1}{2^k}) + k \\
+	\end{align*}
+	This recursion process ends when $n^\frac{1}{2^k}$ reaches 2.
+	\begin{align*}
+		n^\frac{1}{2^k} &= 2 \\
+		\frac{1}{2^k} &= \log_n2  \\
+		2^k &= \log_2n \\
+		k &= \log_2 \log_2n  \\
+	\end{align*}
+	Therefore, $T(n) = \Theta(\log \log n)$
 \end{enumerate}
 
 
