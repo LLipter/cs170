@@ -77,6 +77,34 @@ $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
  	2^{n+1} = 2 * 2^n = \Theta(2^n)
  \]
  
+ \item $n = \Omega((\log n)^{\log \log n})$
+ 
+ Proof:(Use L\textquotesingle Hôpital's rule)
+ 
+ Take the logarithm of both functions
+ \[
+ 	\log (\log n)^{\log \log n} = (\log \log n)^2
+ \]
+ Therefore, it is equivalent to compare $(\log \log n)^2$ and $\log n$
+ \begin{align*}
+ 	\lim_{n \to+\infty} \frac{(\log \log n)^2}{\log n} 
+	&= \lim_{n \to+\infty} \frac{2(\log \log n)\frac{1}{\log n}\frac{1}{n}}{\frac{1}{n}} = \lim_{n \to+\infty}\frac{2(\log \log n)}{\log n} \\
+	&= \lim_{n \to+\infty} \frac{\frac{1}{\log n}\frac{1}{n}}{\frac{1}{n}} = \lim_{n \to+\infty}\frac{1}{\log n} = 0
+ \end{align*}
+ 
+ \item $n + \log n = \Theta(n + (\log n)^2)$
+ 
+ Proof:(Use L\textquotesingle Hôpital's rule)
+  \begin{align*}
+  	\lim_{n \to+\infty} \frac{n + \log n}{n + (\log n)^2}
+		&= \lim_{n \to+\infty} \frac{1 + \frac{1}{n}}{1 + 2(\log n)\frac{1}{n}} = \lim_{n \to+\infty}\frac{n +1}{n + 2\log n} \\
+		&= \lim_{n \to+\infty} \frac{1}{1 + \frac{2}{n}} = 1
+   \end{align*}
+   
+  \item $\log (n!) = O(n\log n)$
+  
+  Proof: Since $n\log n = log (n^n)$, it's equivalent to compare $n!$ and $n^n$. Obviously, $n! = O(n^n)$.
+ 
 \end{enumerate}
 
 \end{qparts}
