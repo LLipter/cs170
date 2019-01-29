@@ -30,7 +30,7 @@
 \maketitle
 Collaborators: YiLin Wu, YeFan Zhou
 
-\section*{1. Study Group}
+\section{Study Group}
 \begin{tabular}{ll}
     Name        &   SID         \\\hline
     Ran Liao    &   3034504227  \\  
@@ -39,7 +39,7 @@ Collaborators: YiLin Wu, YeFan Zhou
 \end{tabular}
 
 \newpage
-\section*{2. Asymptotic Complexity Comparisons}
+\section{Asymptotic Complexity Comparisons}
 \begin{qparts}
 \item 
 $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
@@ -110,10 +110,10 @@ $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
 \end{qparts}
 
 \newpage
-\section*{3. In Between Functions}
+\section{In Between Functions}
 
 \newpage
-\section*{4. Bit Counter}
+\section{Bit Counter}
 
 \begin{tabular}{l | c}
     n	&   \# Total Flips  \\\hline
@@ -154,7 +154,193 @@ By \eqref{eq2} - \eqref{eq1}, we have
 			&= 2^{n+1} - n - 2 \\
 			&= \Theta(2^n)
   \end{align*}
+  
+  \newpage
+  \section{Recurrence Relations}
+ Master theorem:
+ 
+Suppose $a, b, c \in \mathbb{R}^+$, $b > 1$ and $T[1]=1$
+
+Given
+ \begin{equation*}
+ T[n] = aT[\frac{n}{b}] + O(n^c),
+ \end{equation*}
+ 
+ We have
+\[
+ T[n]=\left\{
+\begin{array}{lcl}
+O(n^{\log_ba})      &      & c < \log_ba\\
+O(n^c\log_2n)    &      & c = \log_ba\\
+O(n^c)     &      & c > \log_ba\\
+\end{array} \right. 
+\]
+
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\begin{enumerate}
+	\item a
+\end{enumerate}
 
 
+  \newpage
+  \section{Hadamard matrices}
+  
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\begin{enumerate}
+	\item 
+	\[
+		H_0=
+		\begin{bmatrix} 
+			1 \\
+		\end{bmatrix}
+	\]
+	\[
+		H_1=
+		\begin{bmatrix} 
+			1 & 1 \\ 
+			1 & -1 
+		\end{bmatrix}
+	\]
+		\[
+		H_2=
+		\begin{bmatrix} 
+			1 & 1 & 1 & 1 \\ 
+			1 & -1 & 1 & -1 \\ 
+			1 & 1 & -1 & -1 \\
+			1 & -1 & -1 & 1 \\
+		\end{bmatrix}
+	\]
+	
+	\item 
+	\[
+		H_2v = 
+		\begin{bmatrix} 
+			1 & 1 & 1 & 1 \\ 
+			1 & -1 & 1 & -1 \\ 
+			1 & 1 & -1 & -1 \\
+			1 & -1 & -1 & 1 \\
+		\end{bmatrix}
+		\begin{bmatrix} 
+			1  \\ 
+			-1  \\ 
+			-1  \\
+			1  \\
+		\end{bmatrix}
+		=
+		\begin{bmatrix} 
+			0  \\ 
+			0  \\ 
+			0  \\
+			4  \\
+		\end{bmatrix}
+	\]
+	
+	\item 
+	\begin{align*}
+		u_1 &= H_1(v_1 + v_2) \\
+			&= 
+				\begin{bmatrix} 
+					1 & 1 \\ 
+					1 & -1 
+				\end{bmatrix}
+				(
+				\begin{bmatrix} 
+					1  \\ 
+					-1 \\
+				\end{bmatrix}
+				+
+				\begin{bmatrix} 
+					-1  \\ 
+					1 \\
+				\end{bmatrix}	
+				)	\\	
+			&= 	
+				\begin{bmatrix} 
+					1 & 1 \\ 
+					1 & -1 
+				\end{bmatrix}
+				\begin{bmatrix} 
+					0  \\ 
+					0 \\
+				\end{bmatrix}	\\
+			&= 
+				\begin{bmatrix} 
+					0  \\ 
+					0 \\
+				\end{bmatrix}					
+	\end{align*}
+	\begin{align*}
+		u_2 &= H_1(v_1 - v_2) \\
+			&= 
+				\begin{bmatrix} 
+					1 & 1 \\ 
+					1 & -1 
+				\end{bmatrix}
+				(
+				\begin{bmatrix} 
+					1  \\ 
+					-1 \\
+				\end{bmatrix}
+				-
+				\begin{bmatrix} 
+					-1  \\ 
+					1 \\
+				\end{bmatrix}	
+				)	\\	
+			&= 	
+				\begin{bmatrix} 
+					1 & 1 \\ 
+					1 & -1 
+				\end{bmatrix}
+				\begin{bmatrix} 
+					2  \\ 
+					-2 \\
+				\end{bmatrix}	\\
+			&= 
+				\begin{bmatrix} 
+					0  \\ 
+					4 \\
+				\end{bmatrix}					
+	\end{align*}
+	\[
+		u =
+		\begin{bmatrix}
+			u_1 \\
+			u_2 \\
+		\end{bmatrix}
+		=
+		\begin{bmatrix}
+			0 \\
+			0 \\
+			0 \\
+			4 \\
+		\end{bmatrix}		
+	\]
+	
+	$u$ is identical to $H_2v$
+	
+	\item
+	\begin{align*}
+		H_kv &= 			
+				\begin{bmatrix} 
+					H_{k-1} & H_{k-1} \\ 
+					H_{k-1} & -H_{k-1} \\ 
+				\end{bmatrix}
+				\begin{bmatrix}
+					v_1 \\
+					v_2 \\
+				\end{bmatrix} \\
+			&= 
+				\begin{bmatrix} 
+					H_{k-1}v_1 + H_{k-1} v_2 & H_{k-1} v_1 + H_{k-1} v_2\\ 
+					H_{k-1}v_1 + H_{k-1} v_2&  -H_{k-1}v_1 - H_{k-1} v_2 \\ 
+				\end{bmatrix}	\\
+			&= 		
+				\begin{bmatrix} 
+					H_{k-1}(v_1 + v_2) & H_{k-1}(v_1 + v_2) \\ 
+					H_{k-1}(v_1 + v_2) &  -H_{k-1}(v_1 + v_2)  \\ 
+				\end{bmatrix}	
+	\end{align*}
+\end{enumerate}
 
 \end{document}
