@@ -1,0 +1,96 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{2} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators: YiLin Wu, YeFan Zhou
+
+\section*{1. Study Group}
+\begin{tabular}{ll}
+    Name        &   SID         \\\hline
+    Ran Liao    &   3034504227  \\  
+    YiLin Wu    &   3034503863  \\
+    YeFan Zhou  &   3034503824 
+\end{tabular}
+
+\newpage
+\section*{2. Asymptotic Complexity Comparisons}
+\begin{qparts}
+\item 
+$3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
+
+\item 
+\renewcommand{\theenumii}{\roman{enumii}}
+\begin{enumerate}
+  \item $\log_3n = \Theta(\log_4n)$
+  
+  Proof:
+  \[
+	 \log_3n  =  \log_{(4^{\log_4 3})}n = (\frac{1}{\log_4 3})\log_4n = \Theta(\log_4n)
+ \]
+  \item $n\log(n^4) = O(n^2\log(n^3))$
+  
+  Proof:
+ \[
+  	\lim_{n \to +\infty} \frac{n^2\log(n^3)}{n\log(n^4)} = \lim_{n \to +\infty} \frac{3n^2\log n}{4n\log n} = \lim_{n \to +\infty} \frac{3}{4}n = \infty
+ \]
+ 
+ \item $\sqrt{n} = \Omega((\log n)^3)$
+ 
+ Proof: (Use L\textquotesingle Hôpital's rule)
+ \begin{align*}
+ 	\lim_{n \to+\infty} \frac{\sqrt{n}}{(\log n)^3} 
+	&= \lim_{n \to+\infty} \frac{\frac{1}{2\sqrt{n}}}{3(\log n)^2\frac{1}{n}} = \lim_{n \to+\infty} \frac{\sqrt{n}}{(\log n)^2} \\
+	&= \lim_{n \to+\infty} \frac{\frac{1}{2\sqrt{n}}}{2(\log n)\frac{1}{n}} = \lim_{n \to+\infty} \frac{\sqrt{n}}{\log n} \\
+	&= \lim_{n \to+\infty} \frac{\frac{1}{2\sqrt{n}}}{\frac{1}{n}} = \lim_{n \to+\infty} \sqrt{n} = \infty
+ \end{align*}
+ 
+ \item $2^n = \Theta(2^{n+1})$
+ 
+ Proof:
+ \[
+ 	2^{n+1} = 2 * 2^n = \Theta(2^n)
+ \]
+ 
+\end{enumerate}
+
+\end{qparts}
+
+\newpage
+\section*{3. Understanding Academic Dishonesty}
+\begin{qparts}
+\item Not OK
+\item Not OK
+\item Not OK
+\item OK
+
+\end{qparts}
+
+
+
+\end{document}
