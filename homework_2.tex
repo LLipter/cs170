@@ -110,14 +110,50 @@ $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
 \end{qparts}
 
 \newpage
-\section*{3. Understanding Academic Dishonesty}
-\begin{qparts}
-\item Not OK
-\item Not OK
-\item Not OK
-\item OK
+\section*{3. In Between Functions}
 
-\end{qparts}
+\newpage
+\section*{4. Bit Counter}
+
+\begin{tabular}{l | c}
+    n	&   \# Total Flips  \\\hline
+    1  &   1  \\  
+    2  &   4  \\
+    3  &   11 \\
+    4  &   26 \\
+\end{tabular}
+
+There're two stages when counting from 0 to $2^n-1$ for a n-bit counter. 
+
+\begin{itemize}
+	\item Stage1 : when most-significant bit is 0
+	\item Stage2 : when most-significant bit is 1
+\end{itemize}
+
+Suppose $f(n)$ represents the total number of flips need for n-bit long counter. Both in stage 1 and 2, $f(n-1)$ flips is needed to flip all bits to 1 except the most-significant bit. When switching between stage 1 and 2, another $n$ flips is introduced. 1 flip to switch the most-significant bit from 0 to 1. $n-1$ flips needed to switch all other bits to 0. Therefore, we have the following recursive formula:
+\[
+	f(n) = 2f(n-1) + n
+\]
+To solve this formula, we keep using it recursively, providing $f(1) = 1$ as base case:
+ \begin{align}
+ 	f(n) 	&= 2f(n-1) + n \nonumber \\
+		&= 4f(n-2) + 2(n-1) + n \nonumber \\
+		&= 8f(n-3) + 4(n-2) + 2(n-1) + n \nonumber \\
+		&= 2^kf(n-k) + 2^{k-1}(n-k+1) + \ldots + 2^2(n-2) + 2^1(n-1) + 2^0(n-0) \nonumber \\
+		&= 2^{n-1}f(1) + 2^{n-2}(2) + \ldots + 2^2(n-2) + 2^1(n-1) + 2^0(n-0) \nonumber  \\
+		&= 2^{n-1}(1) + 2^{n-2}(2) + \ldots + 2^2(n-2) + 2^1(n-1) + 2^0(n-0) \label{eq1} 
+ \end{align}
+Then we multiply it by 2:
+ \begin{align}
+	2f(n) =  2^{n}(1) + 2^{n-1}(2) + \ldots + 2^3(n-2) + 2^2(n-1) + 2^1(n-0) \label{eq2}  
+ \end{align}
+By \eqref{eq2} - \eqref{eq1}, we have
+ \begin{align*}
+ 	2f(n) - f(n) &= 2^n + 2^{n-1} + \ldots + 2^1 -n \\
+	f(n)		&= \frac{2(1-2^n)}{1-2} - n \\
+			&= 2^{n+1} - n - 2 \\
+			&= \Theta(2^n)
+  \end{align*}
 
 
 
