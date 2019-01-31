@@ -165,7 +165,7 @@ To solve this formula, we keep using it recursively, providing $f(1) = 1$ as bas
 		&= 2^{n-1}f(1) + 2^{n-2}(2) + \ldots + 2^2(n-2) + 2^1(n-1) + 2^0(n-0) \nonumber  \\
 		&= 2^{n-1}(1) + 2^{n-2}(2) + \ldots + 2^2(n-2) + 2^1(n-1) + 2^0(n-0) \label{eq1} 
  \end{align}
-Then we multiply it by 2:
+Then we multiply \eqref{eq1} by 2:
  \begin{align}
 	2f(n) =  2^{n}(1) + 2^{n-1}(2) + \ldots + 2^3(n-2) + 2^2(n-1) + 2^1(n-0) \label{eq2}  
  \end{align}
@@ -416,6 +416,99 @@ Given
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \begin{enumerate}
 	\item
+	
+		\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main idea}
+		
+		The key is to find at least one citizen. Then just let this confirmed citizen having conversation with left $n-1$ friends, and report whether they're citizen or werewolf. This algorithm finds this citizen recursively. 
+		
+		Psedocodes:
+		
+		FIND-CITIZEN($friends$)\{
+		
+			\qquad $n \leftarrow \operatorname{LEN}(friends)$
+		
+			\qquad if ($n == 3$ \textbar\textbar\ $n == 4$ )\{
+			
+				\qquad\qquad Let them have conversation pairwise
+				
+				\qquad\qquad $werewolf \leftarrow$ the person that be reported as werewolf the most time
+				
+				\qquad\qquad RETURN anyone from list $friends$ otherthan $werewolf$
+								
+			\qquad\} else \{
+			
+				\qquad\qquad $newfriends \leftarrow$  a empty list
+			
+				\qquad\qquad  for ($i=0;i<n/2;i++$)\{
+					
+					\qquad\qquad\qquad Let $friends\left[2i\right]$ and $friends\left[2i+1\right]$ have conversation
+					
+					\qquad\qquad\qquad $result1 \leftarrow$ result be reported by $friends\left[2i\right]$
+					
+					\qquad\qquad\qquad $result2 \leftarrow$ result be reported by $friends\left[2i+1\right]$
+					
+					\qquad\qquad\qquad if ( $result1==$ WEREWOLF \textbar\textbar\ $result2==$ WEREWOLF )\{
+					
+					\qquad\qquad\qquad\qquad continue
+					
+					\qquad\qquad\qquad \}
+					
+					\qquad\qquad\qquad Add $friend\left[2i\right]$ to list $newfriends$
+				
+				\qquad\qquad \}
+				
+				\qquad\qquad if ( $n$ is odd )\{
+				
+				\qquad\qquad\qquad Let $friends\left[n-1\right]$ have conversation with all other people in  $friends$
+				
+				\qquad\qquad\qquad if ( the majority reports $friends\left[n\right]$ as CITIZEN) \{
+				
+				\qquad\qquad\qquad\qquad Add $friends\left[n-1\right]$ to list $newfriends$
+				
+				\qquad\qquad\qquad \}
+								
+				\qquad\qquad \}
+				
+				\qquad\qquad RETURN FIND-CITIZEN($newfriends$)
+				
+			\qquad\}
+			
+		\}
+		
+		\item \textbf{Proof of correctness}
+		
+		If either person be reported as werewolf within a pair, there're only two possible situations. Either (1) one of them is citizen and the other is werewolf or (2) both of them are werewolves. Therefore, the number of werewolf in $newfriends$ will decrease more than the number of citizen in each iteration. If there're more citizens than werewolves in the beginning, this property will hold true for all iterations in this algorithm. Thus, it guarantees there're 2 or 3 citizens and only 1 werewolf in the base case, which can prove the correctness of the confirmed citizen.
+		
+		\item \textbf{Running time}
+		
+		In each iteration, at most half of people in  $friends$ will be added to $newfriends$. Therefore, this algorithm has at most $\log n$ layers. In each layer it costs $O(n)$ to  have conversation. In total, the runtime should be $O(n\log n)$.
+		
+	\end{enumerate}
+
+\item Extra Credit 
+
+\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main idea}
+		
+		Again, the key is to find at least one citizen. Just randomly pick a person from all friends and let him having conversation with all other friends. If the majority reports him as citizen, just return him. Otherwise, just randomly pick another person and try it again.
+		
+		
+		
+		\item \textbf{Proof of correctness}
+		
+		There're more citizens than werewolves in friends, therefore, the person returned by this algorithm must be a real citizen.
+		
+		\item \textbf{Running time}
+		
+		There're more citizens than werewolves in friends, therefore, on average we could find this citizen within first 2 tries. So the runtime is $O(2n) = O(n)$ 
+		
+	\end{enumerate}
+
+	
 \end{enumerate}
+
 
 \end{document}
