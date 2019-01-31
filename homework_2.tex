@@ -112,6 +112,28 @@ $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
 \newpage
 \section{In Between Functions}
 
+Disproof:
+
+Consider the following function, this is a counterexample to the claim.
+\begin{equation*}
+	f(n) = \lfloor 2^{\sqrt{n}} \rfloor 
+\end{equation*}
+
+Since for $\forall c>0$
+\begin{equation}
+	\lim_{n \to+\infty} \frac{\lfloor 2^{\sqrt{n}} \rfloor} {n^c} = +\infty \label{eq4} \
+\end{equation}
+
+By \eqref{eq4}, first part of claim doesn't hold. This can be proved by keep using L\textquotesingle Hôpital's rule. 
+
+In the meantime, for $\forall \alpha > 1$
+\begin{equation}
+	\lim_{n \to +\infty} \frac{\alpha^n}{\lfloor 2^{\sqrt{n}}\rfloor} = +\infty \label{eq5} \
+\end{equation}
+
+By \eqref{eq5}, second part of claim doesn't hold. Again, this can be proved similarly with L\textquotesingle Hôpital's rule.
+
+
 \newpage
 \section{Bit Counter}
 
@@ -179,9 +201,9 @@ Given
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \begin{enumerate}
 	\item 
-	Let $a=4, b=2, c=1$. Since $\log_ba = log_2 4 = 2 > c$, $T(n) = \Theta(n^{\log_ba}) = O(n^2)$.
+	Let $a=4, b=2, c=1$. Since $\log_ba = log_2 4 = 2 > c$, $T(n) = \Theta(n^{\log_ba}) = \Theta(n^2)$.
 	\item 
-	Let $a=4, b=3, c=2$. Since $\log_ba = log_3 4 < c$, $T(n) = \Theta(n^c) = O(n^2)$.
+	Let $a=4, b=3, c=2$. Since $\log_ba = log_3 4 < c$, $T(n) = \Theta(n^c) = \Theta(n^2)$.
 	\item
 	\begin{align*}
 		T(n) &= T(\sqrt{n}) + 1 \\
@@ -338,7 +360,7 @@ Given
 	$u$ is identical to $H_2v$
 	
 	\item
-	\begin{align*}
+	\begin{align}
 		H_kv &= 			
 				\begin{bmatrix} 
 					H_{k-1} & H_{k-1} \\ 
@@ -347,18 +369,53 @@ Given
 				\begin{bmatrix}
 					v_1 \\
 					v_2 \\
-				\end{bmatrix} \\
+				\end{bmatrix} \nonumber \\
 			&= 
 				\begin{bmatrix} 
-					H_{k-1}v_1 + H_{k-1} v_2 & H_{k-1} v_1 + H_{k-1} v_2\\ 
-					H_{k-1}v_1 + H_{k-1} v_2&  -H_{k-1}v_1 - H_{k-1} v_2 \\ 
-				\end{bmatrix}	\\
+					H_{k-1}v_1 + H_{k-1} v_2 \\ 
+					H_{k-1}v_1 - H_{k-1} v_2 \\ 
+				\end{bmatrix} \label{eq3} 	\\
 			&= 		
 				\begin{bmatrix} 
-					H_{k-1}(v_1 + v_2) & H_{k-1}(v_1 + v_2) \\ 
-					H_{k-1}(v_1 + v_2) &  -H_{k-1}(v_1 + v_2)  \\ 
+					H_{k-1}(v_1 + v_2)  \\ 
+					H_{k-1}(v_1 - v_2) \nonumber   \\ 
 				\end{bmatrix}	
-	\end{align*}
+	\end{align}
+	
+	\item
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main idea}
+		
+		This is a recursive algorithm. 
+		
+		If the length of $v$ is 1, just return $H_0v$ immediately. This is the base case.
+		
+		Otherwise, let $v_1$ and $v_2$ be the top and bottom half of the vector $v$, respectively. Invoke this algorithm recursively to compute $H_{k-1}v_1$ and $H_{k-1}v_2$. Return $									\begin{bmatrix} 
+					H_{k-1}v_1  + H_{k-1}v_2\\ 
+					H_{k-1}v_1  -  H_{k-1}v_2 \\ 
+				\end{bmatrix}$ as result.
+		\item \textbf{Proof of correctness}
+		
+		By \eqref{eq3}, this strategy is correct mathematically.
+		\item \textbf{Running time}
+		
+		This algorithm divides the problem into 2 subproblems, thus reducing the problem size by factor 2. Adding several 1-d vectors will cost $O(n)$ operations. Thus, we have the following formula.
+		\[
+			T(n) = 2T(\frac{n}{2}) + O(n)
+		\]
+		
+		By Master theorem, $T(n) = O(n\log n)$.
+		
+	\end{enumerate}
+\end{enumerate}
+
+ \newpage
+  \section{Fastest Winning Strategys}
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\begin{enumerate}
+	\item
 \end{enumerate}
 
 \end{document}
