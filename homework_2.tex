@@ -28,15 +28,21 @@
 
 \begin{document}
 \maketitle
-Collaborators: YiLin Wu, YeFan Zhou
+Collaborators: Yilin Wu, Jingyi Xu, Renee Pu
 
 \section{Study Group}
 \begin{tabular}{ll}
     Name        &   SID         \\\hline
     Ran Liao    &   3034504227  \\  
-    YiLin Wu    &   3034503863  \\
-    YeFan Zhou  &   3034503824 
+    Yilin Wu    &   3034503863  \\
+    Jingyi Xu   &   3032003885  \\
+    Renee Pu    &   3032083302  \\
 \end{tabular}
+
+
+
+\newpage
+\section{Three Part Solution}
 
 \newpage
 \section{Asymptotic Complexity Comparisons}
@@ -79,18 +85,12 @@ $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
  
  \item $n = \Omega((\log n)^{\log \log n})$
  
- Proof:(Use L\textquotesingle Hôpital's rule)
+ Proof:
  
- Take the logarithm of both functions
+ Let $x = \log n$, therefore, $n = 2^x$ and $(\log n)^{\log \log n} = x^{\log x}$
  \[
- 	\log (\log n)^{\log \log n} = (\log \log n)^2
+ 	\lim_{n \to+\infty} \frac{n}{(\log n)^{\log \log n}} = \lim_{x \to+\infty} \frac{2^x}{ x^{\log x}} = \infty
  \]
- Therefore, it is equivalent to compare $(\log \log n)^2$ and $\log n$
- \begin{align*}
- 	\lim_{n \to+\infty} \frac{(\log \log n)^2}{\log n} 
-	&= \lim_{n \to+\infty} \frac{2(\log \log n)\frac{1}{\log n}\frac{1}{n}}{\frac{1}{n}} = \lim_{n \to+\infty}\frac{2(\log \log n)}{\log n} \\
-	&= \lim_{n \to+\infty} \frac{\frac{1}{\log n}\frac{1}{n}}{\frac{1}{n}} = \lim_{n \to+\infty}\frac{1}{\log n} = 0
- \end{align*}
  
  \item $n + \log n = \Theta(n + (\log n)^2)$
  
@@ -101,9 +101,9 @@ $3 \leq  7 \leq 2 \leq 5 \leq 4 \leq 9 \leq 8 \leq 6 \leq 1$
 		&= \lim_{n \to+\infty} \frac{1}{1 + \frac{2}{n}} = 1
    \end{align*}
    
-  \item $\log (n!) = O(n\log n)$
+  \item $\log (n!) = \Theta(n\log n)$
   
-  Proof: Since $n\log n = log (n^n)$, it's equivalent to compare $n!$ and $n^n$. Obviously, $n! = O(n^n)$.
+  Proof: By Stirling's approximation, actually $n\log n$ and $\log n!$ are equivalent when $n$ is large enough.
  
 \end{enumerate}
 
@@ -128,11 +128,10 @@ By \eqref{eq4}, first part of claim doesn't hold. This can be proved by keep usi
 
 In the meantime, for $\forall \alpha > 1$
 \begin{equation}
-	\lim_{n \to +\infty} \frac{\alpha^n}{\lfloor 2^{\sqrt{n}}\rfloor} = +\infty \label{eq5} \
+	\lim_{n \to +\infty} \frac{\alpha^n}{\lfloor 2^{\sqrt{n}}\rfloor} = \lim_{n \to +\infty} \left(  \frac{\alpha^{\sqrt{n}}}{2} \right)^{\sqrt{n}}= +\infty \label{eq5} \
 \end{equation}
 
-By \eqref{eq5}, second part of claim doesn't hold. Again, this can be proved similarly with L\textquotesingle Hôpital's rule.
-
+By \eqref{eq5}, second part of claim doesn't hold.
 
 \newpage
 \section{Bit Counter}
@@ -415,15 +414,47 @@ Given
   \section{Fastest Winning Strategys}
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \begin{enumerate}
-	\item
-	
-		\renewcommand{\theenumii}{\roman{enumii}}
+
+\item 
+
+\renewcommand{\theenumii}{\roman{enumii}}
 	\begin{enumerate}
 		\item \textbf{Main idea}
 		
-		The key is to find at least one citizen. Then just let this confirmed citizen having conversation with left $n-1$ friends, and report whether they're citizen or werewolf. This algorithm finds this citizen recursively. 
+		The key is to find at least one citizen. 
 		
-		Psedocodes:
+		If there're only 3 or 4 people left, just let them having conversation pairwise and return the person that be reported as citizen the most time to be the candidate of the group. This is the base case. 
+		
+		Otherwise, split them into two equal size subgroup and invoke this algorithm to find their candidate respectively. Then let these two candidate having conversation with all other person in both groups. Return the candidate that be reported as citizen more times to be the candidate of the combined group. 
+		
+		
+		\item \textbf{Proof of correctness}
+		
+		Since there're more citizens than werewolves in the beginning, when splitting friends into two equal size subgroups, there exists at least one subgroup that citizen holds majority. Keep focusing on the citizen majority group and keep splitting it. At least 1 base case exists where citizen holds majority. Thus, the candidate reported be this group must be true citizen. When comparing between two subgroups' candidate, if in combined group and one of the subgroups citizen holds majority, the true citizen will be guaranteed be returned as the candidate of the combined group.
+		
+		\item \textbf{Running time}
+		
+		There're at most $\log n$ layers. In each layer, $O(n)$ time is needed to comparing between two possible candidate. 
+		\[
+			T(n) = 2T(\frac{n}{2}) + n
+		\]
+		
+		Therefore, the runtime is $O(n\log n)$
+		
+	\end{enumerate}
+
+
+
+
+\newpage
+	\item Extra Credit 
+	
+		\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Psedocodes}
+		
+		The key is to find at least one citizen. Then just let this confirmed citizen having conversation with left $n-1$ friends, and reports whether they're citizen or werewolf. This algorithm finds this citizen recursively. 
+		
 		
 		FIND-CITIZEN($friends$)\{
 		
@@ -439,7 +470,7 @@ Given
 								
 			\qquad\} else \{
 			
-				\qquad\qquad $newfriends \leftarrow$  a empty list
+				\qquad\qquad $newfriends \leftarrow$  an empty list
 			
 				\qquad\qquad  for ($i=0;i<n/2;i++$)\{
 					
@@ -463,7 +494,7 @@ Given
 				
 				\qquad\qquad\qquad Let $friends\left[n-1\right]$ have conversation with all other people in  $friends$
 				
-				\qquad\qquad\qquad if ( the majority reports $friends\left[n\right]$ as CITIZEN) \{
+				\qquad\qquad\qquad if ( the majority reports $friends\left[n-1\right]$ as CITIZEN) \{
 				
 				\qquad\qquad\qquad\qquad Add $friends\left[n-1\right]$ to list $newfriends$
 				
@@ -479,33 +510,20 @@ Given
 		
 		\item \textbf{Proof of correctness}
 		
-		If either person be reported as werewolf within a pair, there're only two possible situations. Either (1) one of them is citizen and the other is werewolf or (2) both of them are werewolves. Therefore, the number of werewolf in $newfriends$ will decrease more than the number of citizen in each iteration. If there're more citizens than werewolves in the beginning, this property will hold true for all iterations in this algorithm. Thus, it guarantees there're 2 or 3 citizens and only 1 werewolf in the base case, which can prove the correctness of the confirmed citizen.
+		If either person be reported as werewolf within a pair, there're only two possible situations. Either (1) one of them is citizen and the other is werewolf or (2) both of them are werewolves. Therefore, the number of werewolf in $newfriends$ will decrease more than the number of citizen in each iteration. Also, if both person be reported as citizen within a pair, either (1) both of them are citizens or (2) both of them are werewolves. Citizen and werewolf come in pairs, so remove half of them wouldn't sabotage the citizen's majority. If there're more citizens than werewolves in the beginning, this property will hold true for all iterations in this algorithm. Thus, it guarantees there're 2 or 3 citizens and only 1 werewolf in the base case, which can prove the correctness of the confirmed citizen.
 		
 		\item \textbf{Running time}
 		
-		In each iteration, at most half of people in  $friends$ will be added to $newfriends$. Therefore, this algorithm has at most $\log n$ layers. In each layer it costs $O(n)$ to  have conversation. In total, the runtime should be $O(n\log n)$.
+		In each iteration, at most half of people in  $friends$ will be added to $newfriends$. Therefore, this algorithm has at most $\log n$ layers. In each layer it costs $O(n)$ to  have conversation. So we have the following formula:
+		\[
+			T(n) = T(\frac{n}{2}) + n
+		\]
 		
+		By Master theorem, $T(n) = O(n)$.
+				
 	\end{enumerate}
 
-\item Extra Credit 
 
-\renewcommand{\theenumii}{\roman{enumii}}
-	\begin{enumerate}
-		\item \textbf{Main idea}
-		
-		Again, the key is to find at least one citizen. Just randomly pick a person from all friends and let him having conversation with all other friends. If the majority reports him as citizen, just return him. Otherwise, just randomly pick another person and try it again.
-		
-		
-		
-		\item \textbf{Proof of correctness}
-		
-		There're more citizens than werewolves in friends, therefore, the person returned by this algorithm must be a real citizen.
-		
-		\item \textbf{Running time}
-		
-		There're more citizens than werewolves in friends, therefore, on average we could find this citizen within first 2 tries. So the runtime is $O(2n) = O(n)$ 
-		
-	\end{enumerate}
 
 	
 \end{enumerate}
