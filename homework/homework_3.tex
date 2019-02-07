@@ -531,5 +531,24 @@ Collaborators: Yilin Wu, Jingyi Xu, Renee Pu
 \caption{\label{fig:bfs}BFS Tree}
 \end{figure}
 
+\newpage
+\section{Breadth-First Search}
+
+\begin{qparts}
+
+	\item \textbf{Main Idea}
+	
+	First compute the meta-graph $G^M$ of the original graph $G$. Then construct the reverse graph of $G^M$ and denote it as $G^{MR}$. Run DFS algorithm on $G^{MR}$ and record the vertex that has \textbf{largest} \textit{post} number. Denote such vertex as $v_s$. Run \textbf{single} \textit{explore()} function on $v_s$ in graph $G^M$. Vertex $v$ exists if and only if $v_s$ can reach all vertices in $G^{M}$ within this explore.
+	
+	\item \textbf{Proof of Correctness}
+	
+	Every pair of vertices can reach each other if they're in the same strong connected component. Therefore, the original proposition is equivalent to check whether a vertex in $G^M$ exists that can reach all other vertices within $G^M$. The vertex with largest \textit{post} number in $G^{MR}$ is a \textit{sink} and hence is a \textit{source} in graph $G^M$. Obviously, this \textit{source} vertex is the only vertex that be possible to reach all other vertices. So just run another \textit{explore()} to check whether it can.
+			
+	\item \textbf{Runtime Analysis}
+	
+	Compute the meta-graph $G^M$ will cost $O(|V| + |E|)$ time. Construct the reverse graph $G^{MR}$ also will cost $O(|V| + |E|)$ time. Run DFS search on graph $G^M$ and $G^{MR}$ will still cost $O(|V| + |E|)$ time. Therefore the total runtime is $O(|V|+|E|)$
+
+\end{qparts}
+
 
 \end{document}
