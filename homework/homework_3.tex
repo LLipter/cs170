@@ -31,13 +31,13 @@
 Collaborators: Yilin Wu, Jingyi Xu, Renee Pu
 
 \section{Study Group}
-\begin{tabular}{ll}
-    Name        &   SID         \\\hline
-    Ran Liao    &   3034504227  \\  
-    Yilin Wu    &   3034503863  \\
-    Jingyi Xu   &   3032003885  \\
-    Renee Pu    &   3032083302  \\
-\end{tabular}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Yilin Wu		&   3034503863  	\\
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
 
 
 
@@ -505,8 +505,31 @@ Collaborators: Yilin Wu, Jingyi Xu, Renee Pu
 		
 		
 	\end{enumerate}
-
 \end{qparts}
+
+\newpage
+\section{Breadth-First Search}
+
+	\begin{center}
+	\begin{tabular}{c | c | c}
+	\hline
+	Step	& Node Processed        &   Queue         \\\hline
+	1	&	&   A		\\\hline
+	2	&A	&   B-D	\\\hline
+	3	&B	&   D-C-E	\\\hline
+	4	&D	&   C-E	\\\hline
+	5	&C	&   E-F	\\\hline
+	6	&E	&   F		\\\hline
+	7	&F	&     		\\\hline
+	\end{tabular}
+	\end{center}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{hw3_bfs.png}
+\caption{\label{fig:bfs}BFS Tree}
+\end{figure}
 
 
 \end{document}
