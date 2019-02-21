@@ -1,0 +1,182 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{5} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+
+
+\newpage
+\section{Updating Labels}
+
+\begin{qparts}
+	\item \textbf{Main Idea}
+
+	Run DFS from root node $r$ and update label whenever visit a new vertex. Suppose vertex $v$ is currently being visited and $l(v) = k$. The $k$th ancestor of $v$ is located on the $k$th element in stack counting from top (this value can be access in $O(1)$ time, if we use an array and a pointer to simulate a stack). Donate this vertex as $w$, then update $l(v) = l(w)$.
+	
+	\item \textbf{Proof of Correctness}
+	
+	Labels are updated from root $r$ to leaf nodes. Therefore the ancestor of a given vertex $v$ is updated before $v$. This property can guarantee the correctness of algorithm.
+	
+
+	\item \textbf{Runtime Analysis}
+	
+	DFS will cost $O(|V| + |E|)$.
+	
+
+\end{qparts}
+
+\newpage
+\section{Count Four Cycle}
+
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Suppose $A$ is the adjacency matrix of graph $G$. $A_{i,j} = 1$ iff there's an edge between vertex $i$ and $j$. Compute $A^2$ and then subtract 1 from $A^2_{i, i}$ for $ \forall A_{i, j} = 1$.  Then compute $A^3 = A^2 A$ and subtract 1 from $A^3_{i, j}$ for $\forall A_{j, k} = 1$. Lastly, compute $A^4 = A^3 A$. There's a four cycle iff $\exists A^4_{i, i} > 0$.
+
+	\item \textbf{Proof of Correctness}
+	
+	$A$ represents the number of path between every pair of vertices with length 1. $A^2$ represents the number of path between every pair vertices with length 2, and so on. Therefore check $A^4{i, i}$ can reveal the existence of four cycles. All subtraction made previous is for eliminating invalid cycles.
+
+	\item \textbf{Runtime Analysis}
+	
+	The trivial matrix product will cost $O(|V|^3)$ time, and all subtraction can be finished within $O(|V|^2)$ time. Therefore, the overall runtime is $O(|V|^3)$.
+	
+
+\end{qparts}
+
+\newpage
+\section{Constrained Dijkstra}
+
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Run Dijkstra algorithm on vertex $v_0$ and record shortest path in array $p$. Then reverse all edges in $G$, denote the new graph as $G_M$. Run Dijkstra algorithm on vertex $v_0$ again in new graph and record shortest path in array $p_M$. The shortest path between $u$ and $v$ can be reconstruct by combining path from $v_0$ to $u$ in $G_M$ and path from $v_0$ to $v$ in $G$.
+	
+	\item \textbf{Proof of Correctness}
+	
+	The path from $u$ to $v$ can be divided into two parts, namely, path from $u$ to $v_0$ and path from $v_0$ to $v$. The shortest path from $u$ to $v_0$ can be found in $G_M$. The shortest path from $v_0$ to $v$ can be found in $G$. 
+
+	\item \textbf{Runtime Analysis}
+	
+	Dijkstra algorithm will cost $O((|V| + |E|)\log{|V|})$
+
+\end{qparts}
+\newpage
+\section{Arbitrage}
+
+\begin{qparts}
+	\item
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Construct a graph $G$ where $v_i$ represents currency $c_i$. The weight of edge between $v_i$ and $v_j$ will be $\frac{1}{r_{i,j}}$. Run a modified Bellman-Ford on this graph start with vertex $s$. The update role is changed to $\operatorname{dist}(v) = \operatorname{min}(\operatorname{dist}(v), \operatorname{dist}(u) \times l(u, v))$. Initially, $\operatorname{dist}(s) = 1$.
+		
+		\item \textbf{Proof of Correctness}
+		
+		The multiplication and addition has similar associative and commutative property. All deduction for Bellman-Ford algorithm will still holds true for the modified version. In modified version, edge with weight less than 1 will be consider as a ``negative" edge.
+		
+		\item \textbf{Runtime Analysis}
+		
+		The modification will not change Bellman-Ford algorithm's runtime. Therefore it is $O(|V||E|)$.
+		
+	\end{enumerate}
+	
+	\item
+	
+		\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Use the same graph defined in part (a) and add additional iteration to the outer loop. If some vertices is updated in the final iteration, arbitrage situation exists.
+		
+		\item \textbf{Proof of Correctness}
+		
+		If there's an arbitrage situation, there must exist a loop where weights' product is less than 1. This is similar to have a negative loop in the original version of Bellman-Ford algorithm. This ``negative" loop will cause the shortest path never stop updating.
+		
+		\item \textbf{Runtime Analysis}
+		
+		The modification will not change Bellman-Ford algorithm's runtime. Therefore it is $O(|V||E|)$.
+		
+	\end{enumerate}
+
+\end{qparts}
+\newpage
+\section{Bounded Bellman-Ford}
+
+\begin{qparts}
+	\item \textbf{Pseudocode}
+
+	Modified-Bellman-Ford($G = (V, E)$)\{
+
+		\qquad for $\forall u \in V$:
+		
+		\qquad\qquad $\operatorname{dist}(u) = \infty$
+		
+		\qquad\qquad $\operatorname{prev}(u) = \operatorname{nil}$
+		
+		\qquad $\operatorname{dist}(s) = 0$
+	
+		\qquad for $i$ from 1 to $k$:
+		
+		
+		\qquad\qquad for $\forall e=(u,v) \in E$:
+		
+		\qquad\qquad\qquad if($\operatorname{dist}(u) + l(u, v) < \operatorname{dist}(v$))
+		
+		\qquad\qquad\qquad\qquad  $\operatorname{dist}(v) = \operatorname{min}(\operatorname{dist}(v), \operatorname{dist}(u) + l(u, v))$
+		
+		\qquad\qquad\qquad\qquad $\operatorname{prev}(v) = u$
+	
+	\}
+		
+	\item \textbf{Proof of Correctness}
+	
+	Each iteration in outer loop will try to consider the shortest path with 1 more edges. Therefore, after $k$ iterations, the dist will contain information about the shortest path with no more than k edges.
+
+	\item \textbf{Runtime Analysis}
+	
+	The outer loop will run $k$ times, therefore the runtime is $O(k|E|)$.
+	
+
+\end{qparts}
+     
+
+
+\end{document}
