@@ -1,0 +1,158 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{6} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+
+
+\newpage
+\section{Finding MSTs by Deleting Edges}
+
+	I'm going to prove every edge deleted by this algorithm is NOT a part of MST. Suppose edge $e$ is going to be deleted and $e$ is a part of MST. Split all vertices into two disjoint parts $S_1$ and $S_2$, where edge $e$ cross them. By definition, deleting $e$ will not disconnect the graph. Therefore there exists $e^\prime$ that also crosses these two parts. Since the algorithm processing edges in decreasing weights order, weight of $e^\prime$ must be less than weight of $e$. Therefore, by cut property, $e$ cannot be a part of MST, which is contradicted to my assumption. Hence, every edge deleted by this algorithm is NOT a part of MST.
+	
+\newpage
+\section{Huffman Coding}
+\begin{qparts}
+	\item 
+	
+	$S(F) = km = m \log n$
+	
+	\item 
+	
+	Construct a file that $n$ different characters appear equal times.
+	
+	\item
+	
+	Construct a file that $n-1$ character appears only 1 time and the other 1 character appears $m - n - 1$ times. The one character will be encoded with 1 bit length. therefore $H(F) \approx m$ when $m$ is way more larger than $n$. Therefore, $E(F) = \frac{S(F)}{H(F)} = \frac {m \log n} {m} = O(\log n)$
+
+\end{qparts}
+
+
+
+\newpage
+\section{Graph Game}
+\begin{qparts}
+
+	\item No, since step 2 will never decrease scores.
+	
+	\item 
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Sort nodes according to their value in decreasing order.
+				
+		\item \textbf{Proof of Correctness}
+		
+		Suppose there's an edge between $v$ and $u$ and $l(v) > l(u)$. Label $v$ before $u$ will always give more scores than the reverse order. The difference should be $l(v) - l(u)$.
+
+		\item \textbf{Runtime Analysis}
+		
+		Sort will cost $O(|V| \log |V|)$ time. And each edge will be check at most twice in the following process. Therefore, the total runtime is $O(|V|\log |V| + |E|)$.
+				
+	\end{enumerate}
+	
+	\item Use the same example graph showed above, which only has vertex $A, B$ and $C$. $A$ connects with $B$, $B$ connects with $C$. Let $l(A) = 0, l(B) = -1, l(C) = -2$. The optimal solution is label nothing and get 0 score. But my algorithm will get score of -1.
+	
+	\item Use the same example again. Let $l(A) = 1, l(B) = -1, l(C) = 1$. The optimal solution is label $A, C$ then $B$, which will give 2 score. But my friend's algorithm will first delete $B$ and disconnect the graph, which will result in 0 score.
+	
+
+
+\end{qparts}
+
+
+\newpage
+\section{Sum of Products}
+\begin{qparts}
+	\item 
+	
+	Job $i$ should be assigned to machine $n+1-i$.
+	
+	\item 
+	
+	Since $t_i > t_j$ and $c_{i^\prime} > c_{j^\prime}$, let $t_i = t_j + \Delta t$ and $c_{i^\prime} = c_{j^\prime} + \Delta c$, where $\Delta t, \Delta c > 0$.
+	
+	Before modification, the cost of assignment is
+	\begin{align*}
+		\operatorname{cost1} 
+		&= t_ic_{i^\prime} + t_jc_{j^\prime} \\
+		&= (t_j + \Delta t)(c_{j^\prime} + \Delta c) +  t_jc_{j^\prime} \\
+		&=  2t_jc_{j^\prime} + t_j\Delta c + c_{j^\prime}\Delta t + \Delta t \Delta c \\
+	\end{align*}
+	After modification, the cost of assignment is
+	\begin{align*}
+		\operatorname{cost2} 
+		&= t_ic_{j^\prime} + t_jc_{i^\prime} \\
+		&= ( t_j + \Delta t)c_{j^\prime} + t_j (c_{j^\prime} + \Delta c) \\
+		&=  2t_jc_{j^\prime} + t_j\Delta c + c_{j^\prime}\Delta t \\
+	\end{align*}
+	Since $\operatorname{cost_1} - \operatorname{cost_2} =  \Delta t \Delta c > 0$, reassignment will decrease total cost.
+	
+
+	\item
+	
+	Suppose job $i$ is the first job that assigned to machine $j$, where $j \neq n+1-i$. Therefore, all jobs before $i$ are already properly assigned, which implies $j < n+1-i$.
+	
+	So, machine $n+1-i$ can only be assigned with job $k$, where $k > i$. We can apply modification in part b to these pairs of assignment. Hence, assignment in part a is optimal.
+
+\end{qparts}
+
+\newpage
+\section{Preventing Conflict}
+
+\begin{qparts}
+	\item \textbf{Main Idea}
+
+	Process guests one by one. For each guest, put him into the room which he has less enemies in it. i.g. If there're more enemies for him in room A, then put him into room B. Otherwise put him into room A.
+	
+	\item \textbf{Proof of Correctness}
+	
+	Denote the number of enemies break by my solution as $N$. Denote the number of enemies break by optimal solution as $O$. Due to greedy approach, it's guarantee that more than half of all enemies is break. i.g. $N \ge \frac{1}{2}|E|$. Since $|E| \ge O$, we have $N \ge \frac{1}{2} O $.
+	
+
+	\item \textbf{Runtime Analysis}
+	
+	This algorithm will process each vertex and edge only once. Therefore the runtime is $O(|V| + |E|)$.
+	
+
+\end{qparts}
+
+
+
+\end{document}

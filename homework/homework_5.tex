@@ -46,11 +46,11 @@ Collaborators:Jingyi Xu, Renee Pu
 \begin{qparts}
 	\item \textbf{Main Idea}
 
-	Run DFS from root node $r$ and update label whenever visit a new vertex. Suppose vertex $v$ is currently being visited and $l(v) = k$. The $k$th ancestor of $v$ is located on the $k$th element in stack counting from top (this value can be access in $O(1)$ time, if we use an array and a pointer to simulate a stack). Donate this vertex as $w$, then update $l(v) = l(w)$.
+	Run DFS from root node $r$ and update label whenever do post operation to a vertex. Suppose vertex $v$ is currently being operated and $l(v) = k$. The $k$th ancestor of $v$ is located on the $k$th element in stack counting from top (this value can be access in $O(1)$ time, if we use an array and a pointer to simulate a stack). Donate this vertex as $w$, then update $l(v) = l(w)$.
 	
 	\item \textbf{Proof of Correctness}
 	
-	Labels are updated from root $r$ to leaf nodes. Therefore the ancestor of a given vertex $v$ is updated before $v$. This property can guarantee the correctness of algorithm.
+	Labels are updated from leaves $r$ to root nodes. Therefore the ancestor of a given vertex $v$ is updated after $v$. This property can guarantee the correctness of algorithm.
 	
 
 	\item \textbf{Runtime Analysis}

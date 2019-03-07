@@ -1,0 +1,253 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{7} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+	
+
+
+
+\newpage
+\section{Steel Beams}
+\begin{qparts}
+	
+	\item 
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item 
+		
+		Denote the solution as $(s_1, s_2, s_5)$ where $s_i$ represents the number of $i$-foot-long steel beams.
+		There're five possible situations for $T$. 
+		
+		\[ \operatorname{greedy \ solution}=
+		\left\{
+			\begin{array}{rcl}
+				(0, 0, k)       &      & T \operatorname{mod} 5 = 0  \\
+				(1, 0, k)       &      & T \operatorname{mod} 5 = 1  \\
+				(0, 1, k)       &      & T \operatorname{mod} 5 = 2  \\
+				(1, 1, k)       &      & T \operatorname{mod} 5 = 3  \\
+				(0, 2, k)       &      & T \operatorname{mod} 5 = 4  \\
+			\end{array}
+		\right.
+		\]
+		
+		$k$ is some positive integer. Obviously, both of them are optimal solution.
+
+				
+		\item Suppose the beam sizes are $1, 3, 4$, respectively. And the target $T$ is 6. The optimal solution is $3+3$, whereas the greedy solution is $4+ 1 + 1$.
+		
+		
+	\end{enumerate}
+	
+	\item 
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Define subproblem $L[i]$ representing the minimum number of beams that can be welded into a $T$-foot beam. And we have the following recursive relation. And let $T[0] = 0$.
+		
+		\[
+			L[i] = \min_{j=1}^{k}\{L[i - c_j] + 1\}
+		\]
+		
+		\item \textbf{Proof of Correctness}
+		
+		The base case is obviously correct. Then, suppose we want to compute $L[i]$ and, $L[j]$ (where $j<i$) are optimal solutions. We use the minimum value of $L[j]$ for all possible $j$. This is actually greedy approach and thus guarantee the  optimality of $L[i]$. Therefore, $L[T]$ will be optimal solution.
+		
+		\item \textbf{Runtime Analysis}
+		
+		$T$ iterations is needed to solve $T$ subproblems and each of them will cost $O(k)$ time. Therefore, the overall runtime is $O(kT)$ and $O(T)$ space is needed.
+	
+	\end{enumerate}
+		
+\end{qparts}
+
+
+\newpage
+\section{Egg Drop}
+\begin{qparts}
+	\item 
+	
+	Drop the first egg from 14th story. If it doesn't break, drop it from $(14 + 13)$th story. If still it doesn't break, drop it from $(14 + 13 + 12)$th story. Repeat this process until the first egg breaks, and then use the second egg test remaining possible range one by one in increasing story order.
+	
+	14 drops is needed for this strategy. Actually, it doesn't depend on when the first egg breaks, 
+	
+	\item
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Define subproblem $F[i][j]$ representing the number of drops needed for a $i$ story building and have $j$ eggs.
+		The recursive relation is:		
+		\[
+			F[i][j] = \min_{x = 1}^{i}\{ \max\{ F[i - x][j] + 1 , F[x-1][j-1] + 1 \} \}
+		\]
+		
+		\item \textbf{Proof of Correctness}
+		
+		There're two possible outcomes when dropping egg from $x$th story. If it doesn't break, the solution is between $(x+1)$th story and $i$th story. It can be considered as a new building with $i-x$ stories and can be represented like this $F[i - x][j] + 1$. If it breaks, the solution is between $1$st story and $(x-1)$th story. So it can be represented by $F[x-1][j-1] + 1$. The max operator will make sure we consider the worst case. The min operator will give the optimal strategy.
+		
+		\item \textbf{Runtime Analysis}
+		
+		There're $nk$ subproblems and each of them will cost $O(n)$ time. Therefore, the overall runtime is $O(n^2k)$.
+	
+	\end{enumerate}
+
+\end{qparts}
+
+
+\newpage
+\section{Non-Prefix Code}
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Define subproblem as $N[i]$, which represents the number of ways we can interpret string $s[0 \cdots i]$. And the recursive relation is as follows. $N[0]$ is 0.
+	
+	\[
+		N[i] = \sum_{(k, v) \in d} N[i - \operatorname{len}(v)] \operatorname{Match}(v, i)
+	\]
+	And
+	\[ \operatorname{Match}(v, i) = 
+	\left\{
+		\begin{array}{rcl}
+			1     &      & \text{string } s[i - \operatorname{len}(v) + 1 \cdots i] \text{ matches with } v  \\
+			0      &      & \text{Otherwise}  \\
+		\end{array}
+	\right.
+	\]
+	\item \textbf{Proof of Correctness}
+	
+	The basic case is trivial and correct. Then, suppose we want to compute $N[i]$, and $N[j]$ (where $j<i$) are all optimal solutions. If character $v$ can be matched in $s[i - \operatorname{len}(v) + 1 \cdots i]$, there're $N[i - \operatorname{len}(v)]$ ways to interpret $s[1 \cdots i]$. Sum over all possible $v$ will make $N[i]$ optimal.
+	
+	
+	\item \textbf{Runtime Analysis}
+	
+	This algorithm will solve $n$ subproblems and each of them will check $m$ possible values in $d$. Each check will cost at most $O(l)$ time. Therefore, the overall runtime is $O(nml)$.
+	
+
+\end{qparts}
+
+
+\newpage
+\section{Road Trip}
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Define subproblem as $S[i][j]$, which represents the minimum cost to arrive at $i$th station with $j$ gallons of gas left.
+	The recursive relation is as follows:
+	\[
+		S[i][j] = \min_{\{ k | k < i \  \&\& \  (d_i - d_k) < (C - j)m \}} \{ S[k][j + \frac{d_i - d_k}{m}] + \frac{d_i - d_k}{m} c_k \}
+	\]
+	
+	In base case, $S[1][x]$ is 0 for all possible $x$. And the final solution is $S[n][0]$.
+
+	\item \textbf{Proof of Correctness}
+	
+	In each iteration, I try to compute the minimum cost that let car comes directly from $k$th station to $i$th station. The only constrain is $(d_i - d_k) < (C - j)m$, because the car can hold at most $C$ gallons of gas. And the answer is $S[n][0]$, because if there's gas left in cat when arriving at the last station. We improve solution by let car add less gas in the previous station.
+	
+	\item \textbf{Runtime Analysis}
+	
+	There're $nC$ subproblems and each of them will cost $O(n)$ time to check each possible previous station. Therefore, the overall runtime is $O(n^2C)$.
+	
+
+\end{qparts}
+
+\newpage
+\section{Propositional Parentheses}
+\begin{qparts}
+	
+	\item 
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item 
+		
+		Denote the solution as $(s_1, s_2, s_5)$ where $s_i$ represents the number of $i$-foot-long steel beams.
+		There're five possible situations for $T$. 
+		
+		\[ \operatorname{greedy \ solution}=
+		\left\{
+			\begin{array}{rcl}
+				(0, 0, k)       &      & T \operatorname{mod} 5 = 0  \\
+				(1, 0, k)       &      & T \operatorname{mod} 5 = 1  \\
+				(0, 1, k)       &      & T \operatorname{mod} 5 = 2  \\
+				(1, 1, k)       &      & T \operatorname{mod} 5 = 3  \\
+				(0, 2, k)       &      & T \operatorname{mod} 5 = 4  \\
+			\end{array}
+		\right.
+		\]
+		
+		$k$ is some positive integer. Obviously, both of them are optimal solution.
+
+				
+		\item Suppose the beam sizes are $1, 3, 4$, respectively. And the target $T$ is 6. The optimal solution is $3+3$, whereas the greedy solution is $4+ 1 + 1$.
+		
+		
+	\end{enumerate}
+	
+	\item 
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Define subproblem $L[i]$ representing the minimum number of beams that can be welded into a $T$-foot beam. And we have the following recursive relation. And let $T[0] = 0$.
+		
+		\[
+			L[i] = \min_{j=1}^{k}\{L[i - c_j] + 1\}
+		\]
+		
+		\item \textbf{Proof of Correctness}
+		
+		The base case is obviously correct. Then, suppose we want to compute $L[i]$ and, $L[j]$ (where $j<i$) are optimal solutions. We use the minimum value of $L[j]$ for all possible $j$. This is actually greedy approach and thus guarantee the  optimality of $L[i]$. Therefore, $L[T]$ will be optimal solution.
+		
+		\item \textbf{Runtime Analysis}
+		
+		$T$ iterations is needed to solve $T$ subproblems and each of them will cost $O(k)$ time. Therefore, the overall runtime is $O(kT)$ and $O(T)$ space is needed.
+	
+	\end{enumerate}
+		
+\end{qparts}
+
+
+
+
+
+
+\end{document}
