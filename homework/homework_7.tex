@@ -164,27 +164,54 @@ Collaborators:Jingyi Xu, Renee Pu
 
 \end{qparts}
 
-
 \newpage
-\section{Road Trip}
+\section{Non-Prefix Code}
 \begin{qparts}
 	\item \textbf{Main Idea}
 	
-	Define subproblem as $S[i][j]$, which represents the minimum cost to arrive at $i$th station with $j$ gallons of gas left.
-	The recursive relation is as follows:
-	\[
-		S[i][j] = \min_{\{ k | k < i \  \&\& \  (d_i - d_k) < (C - j)m \}} \{ S[k][j + \frac{d_i - d_k}{m}] + \frac{d_i - d_k}{m} c_k \}
-	\]
+	Define subproblem as $N[i]$, which represents the number of ways we can interpret string $s[0 \cdots i]$. And the recursive relation is as follows. $N[0]$ is 0.
 	
-	In base case, $S[1][x]$ is 0 for all possible $x$. And the final solution is $S[n][0]$.
-
+	\[
+		N[i] = \sum_{(k, v) \in d} N[i - \operatorname{len}(v)] \operatorname{Match}(v, i)
+	\]
+	And
+	\[ \operatorname{Match}(v, i) = 
+	\left\{
+		\begin{array}{rcl}
+			1     &      & \text{string } s[i - \operatorname{len}(v) + 1 \cdots i] \text{ matches with } v  \\
+			0      &      & \text{Otherwise}  \\
+		\end{array}
+	\right.
+	\]
 	\item \textbf{Proof of Correctness}
 	
-	In each iteration, I try to compute the minimum cost that let car comes directly from $k$th station to $i$th station. The only constrain is $(d_i - d_k) < (C - j)m$, because the car can hold at most $C$ gallons of gas. And the answer is $S[n][0]$, because if there's gas left in cat when arriving at the last station. We improve solution by let car add less gas in the previous station.
+	The basic case is trivial and correct. Then, suppose we want to compute $N[i]$, and $N[j]$ (where $j<i$) are all optimal solutions. If character $v$ can be matched in $s[i - \operatorname{len}(v) + 1 \cdots i]$, there're $N[i - \operatorname{len}(v)]$ ways to interpret $s[1 \cdots i]$. Sum over all possible $v$ will make $N[i]$ optimal.
+	
 	
 	\item \textbf{Runtime Analysis}
 	
-	There're $nC$ subproblems and each of them will cost $O(n)$ time to check each possible previous station. Therefore, the overall runtime is $O(n^2C)$.
+	This algorithm will solve $n$ subproblems and each of them will check $m$ possible values in $d$. Each check will cost at most $O(l)$ time. Therefore, the overall runtime is $O(nml)$.
+	
+
+\end{qparts}
+
+
+\newpage
+\section{Breaking Chocolate}
+\begin{qparts}
+	\item \textbf{Subproblem}
+	
+	Define subproblem as $P[a,b][c, d]$, which represents the minimum 	number of breaks needed to separate the raisins out for chocolate with upper left corner position as $(a, b)$ and lower right corner position as $(c, d)$.
+	
+	\item \textbf{Recurrence Relation}
+	\[
+		P[a,b][c,d] = \min( \min_{k=a}^{c}\{ P[a, b][k, d] + P[k, b][c, d] + 1 \}, \min_{k=b}^{d}\{ P[a, b][c, k] + P[a, k][c, d] + 1 \})
+	\]
+	
+	\item \textbf{Runtime Analysis}
+	
+	There're $m^2n^2$ subproblems and each of them will cost $O(m+n)$ time to check each possibility.
+	Therefore, the overall runtime is $O(m^2n^2(m+n))$
 	
 
 \end{qparts}
@@ -194,54 +221,48 @@ Collaborators:Jingyi Xu, Renee Pu
 \begin{qparts}
 	
 	\item 
-	\renewcommand{\theenumii}{\roman{enumii}}
-	\begin{enumerate}
-		\item 
-		
-		Denote the solution as $(s_1, s_2, s_5)$ where $s_i$ represents the number of $i$-foot-long steel beams.
-		There're five possible situations for $T$. 
-		
-		\[ \operatorname{greedy \ solution}=
-		\left\{
-			\begin{array}{rcl}
-				(0, 0, k)       &      & T \operatorname{mod} 5 = 0  \\
-				(1, 0, k)       &      & T \operatorname{mod} 5 = 1  \\
-				(0, 1, k)       &      & T \operatorname{mod} 5 = 2  \\
-				(1, 1, k)       &      & T \operatorname{mod} 5 = 3  \\
-				(0, 2, k)       &      & T \operatorname{mod} 5 = 4  \\
-			\end{array}
-		\right.
-		\]
-		
-		$k$ is some positive integer. Obviously, both of them are optimal solution.
-
-				
-		\item Suppose the beam sizes are $1, 3, 4$, respectively. And the target $T$ is 6. The optimal solution is $3+3$, whereas the greedy solution is $4+ 1 + 1$.
-		
-		
-	\end{enumerate}
-	
-	\item 
 	
 	\renewcommand{\theenumii}{\roman{enumii}}
 	\begin{enumerate}
 		\item \textbf{Main Idea}
 		
-		Define subproblem $L[i]$ representing the minimum number of beams that can be welded into a $T$-foot beam. And we have the following recursive relation. And let $T[0] = 0$.
+		Define subproblem $T[i][j]$ representing the number of different ways there are to correctly parenthesize the formula from $i$th to $j$th position, so that it evaluates to true. And define subproblem $F[i][j]$ representing the number of different ways there are to correctly parenthesize the formula from $i$th to $j$th position, so that it evaluates to false.
 		
-		\[
-			L[i] = \min_{j=1}^{k}\{L[i - c_j] + 1\}
+		Denote $S[i]$ represents the $i$th symbol in input. The recurrence relation is :
+		\[ T[i][j] = \sum_{k=i+1}^{j-1}
+		\left\{
+			\begin{array}{lcl}
+				0       &      & S[k] = T \text{ or } F \\
+				(T[i][k] + F[i][k])\cdot T[k][j] + T[i][k] \cdot (T[k][j] + F[k][j])     &      & S[k] = \lor \\
+				T[i][k] \cdot T[k][j]       &      & S[k] = \land  \\
+			\end{array}
+		\right.
+		\]
+		\[ F[i][j] = \sum_{k=i+1}^{j-1}
+		\left\{
+			\begin{array}{lcl}
+				0       &      & S[k] = T \text{ or } F \\
+				F[i][k] \cdot F[k][j]       &      & S[k] =  \lor \\
+				(T[i][k] + F[i][k])\cdot F[k][j] + F[i][k] \cdot (T[k][j] + F[k][j])     &      & S[k] = \land \\
+
+			\end{array}
+		\right.
 		\]
 		
 		\item \textbf{Proof of Correctness}
 		
-		The base case is obviously correct. Then, suppose we want to compute $L[i]$ and, $L[j]$ (where $j<i$) are optimal solutions. We use the minimum value of $L[j]$ for all possible $j$. This is actually greedy approach and thus guarantee the  optimality of $L[i]$. Therefore, $L[T]$ will be optimal solution.
+		If there're $a$ possible ways to correctly parenthesize formula from $i$ to $k$, and $b$ possible ways to correctly parenthesize formula from $k$ to $j$. There're $a\cdot b$ ways to correctly parenthesize formula from $i$ to $j$. The remaining part in this formula is just some basic facts in logic operation. 
 		
 		\item \textbf{Runtime Analysis}
 		
-		$T$ iterations is needed to solve $T$ subproblems and each of them will cost $O(k)$ time. Therefore, the overall runtime is $O(kT)$ and $O(T)$ space is needed.
+		Suppose the length of input formula is $n$. There're $n^2$ subproblems, and each of them will cost $O(n)$ times.
+		Therefore, the overall runtime is $O(n^3)$.
 	
 	\end{enumerate}
+	
+	\item
+	
+	The probability is $P = \frac{T[1][n]}{T[1][n] + F[1][n]}$.
 		
 \end{qparts}
 
