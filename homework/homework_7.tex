@@ -164,36 +164,7 @@ Collaborators:Jingyi Xu, Renee Pu
 
 \end{qparts}
 
-\newpage
-\section{Non-Prefix Code}
-\begin{qparts}
-	\item \textbf{Main Idea}
-	
-	Define subproblem as $N[i]$, which represents the number of ways we can interpret string $s[0 \cdots i]$. And the recursive relation is as follows. $N[0]$ is 0.
-	
-	\[
-		N[i] = \sum_{(k, v) \in d} N[i - \operatorname{len}(v)] \operatorname{Match}(v, i)
-	\]
-	And
-	\[ \operatorname{Match}(v, i) = 
-	\left\{
-		\begin{array}{rcl}
-			1     &      & \text{string } s[i - \operatorname{len}(v) + 1 \cdots i] \text{ matches with } v  \\
-			0      &      & \text{Otherwise}  \\
-		\end{array}
-	\right.
-	\]
-	\item \textbf{Proof of Correctness}
-	
-	The basic case is trivial and correct. Then, suppose we want to compute $N[i]$, and $N[j]$ (where $j<i$) are all optimal solutions. If character $v$ can be matched in $s[i - \operatorname{len}(v) + 1 \cdots i]$, there're $N[i - \operatorname{len}(v)]$ ways to interpret $s[1 \cdots i]$. Sum over all possible $v$ will make $N[i]$ optimal.
-	
-	
-	\item \textbf{Runtime Analysis}
-	
-	This algorithm will solve $n$ subproblems and each of them will check $m$ possible values in $d$. Each check will cost at most $O(l)$ time. Therefore, the overall runtime is $O(nml)$.
-	
 
-\end{qparts}
 
 
 \newpage
@@ -212,6 +183,30 @@ Collaborators:Jingyi Xu, Renee Pu
 	
 	There're $m^2n^2$ subproblems and each of them will cost $O(m+n)$ time to check each possibility.
 	Therefore, the overall runtime is $O(m^2n^2(m+n))$
+	
+
+\end{qparts}
+
+\newpage
+\section{Road Trip}
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Define subproblem as $S[i][j]$, which represents the minimum cost to arrive at $i$th station with $j$ gallons of gas left.
+	The recursive relation is as follows:
+	\[
+		S[i][j] = \min_{\{ k | k < i \  \&\& \  (d_i - d_k) < (C - j)m \}} \{ S[k][j + \frac{d_i - d_k}{m}] + \frac{d_i - d_k}{m} c_k \}
+	\]
+	
+	In base case, $S[1][x]$ is 0 for all possible $x$. And the final solution is $S[n][0]$.
+
+	\item \textbf{Proof of Correctness}
+	
+	In each iteration, I try to compute the minimum cost that let car comes directly from $k$th station to $i$th station. The only constrain is $(d_i - d_k) < (C - j)m$, because the car can hold at most $C$ gallons of gas. And the answer is $S[n][0]$, because if there's gas left in cat when arriving at the last station. We improve solution by let car add less gas in the previous station.
+	
+	\item \textbf{Runtime Analysis}
+	
+	There're $nC$ subproblems and each of them will cost $O(n)$ time to check each possible previous station. Therefore, the overall runtime is $O(n^2C)$.
 	
 
 \end{qparts}
