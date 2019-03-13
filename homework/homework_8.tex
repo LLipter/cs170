@@ -1,0 +1,223 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{8} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+	
+
+
+
+\newpage
+\section{A Dice Game}
+\begin{qparts}
+	
+	\item 
+	
+	\[
+		W(x, y, z) = \max \{\frac{1}{6} W(x+1, y, 0)\}		
+	\]
+	
+	\item 
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Define subproblem $L[i]$ representing the minimum number of beams that can be welded into a $T$-foot beam. And we have the following recursive relation. And let $T[0] = 0$.
+		
+		\[
+			L[i] = \min_{j=1}^{k}\{L[i - c_j] + 1\}
+		\]
+		
+		\item \textbf{Proof of Correctness}
+		
+		The base case is obviously correct. Then, suppose we want to compute $L[i]$ and, $L[j]$ (where $j<i$) are optimal solutions. We use the minimum value of $L[j]$ for all possible $j$. This is actually greedy approach and thus guarantee the  optimality of $L[i]$. Therefore, $L[T]$ will be optimal solution.
+		
+		\item \textbf{Runtime Analysis}
+		
+		$T$ iterations is needed to solve $T$ subproblems and each of them will cost $O(k)$ time. Therefore, the overall runtime is $O(kT)$ and $O(T)$ space is needed.
+	
+	\end{enumerate}
+		
+\end{qparts}
+
+
+\newpage
+\section{Egg Drop}
+\begin{qparts}
+	\item 
+	
+	Drop the first egg from 14th story. If it doesn't break, drop it from $(14 + 13)$th story. If still it doesn't break, drop it from $(14 + 13 + 12)$th story. Repeat this process until the first egg breaks, and then use the second egg test remaining possible range one by one in increasing story order.
+	
+	14 drops is needed for this strategy. Actually, it doesn't depend on when the first egg breaks, 
+	
+	\item
+	
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Define subproblem $F[i][j]$ representing the number of drops needed for a $i$ story building and have $j$ eggs.
+		The recursive relation is:		
+		\[
+			F[i][j] = \min_{x = 1}^{i}\{ \max\{ F[i - x][j] + 1 , F[x-1][j-1] + 1 \} \}
+		\]
+		
+		\item \textbf{Proof of Correctness}
+		
+		There're two possible outcomes when dropping egg from $x$th story. If it doesn't break, the solution is between $(x+1)$th story and $i$th story. It can be considered as a new building with $i-x$ stories and can be represented like this $F[i - x][j] + 1$. If it breaks, the solution is between $1$st story and $(x-1)$th story. So it can be represented by $F[x-1][j-1] + 1$. The max operator will make sure we consider the worst case. The min operator will give the optimal strategy.
+		
+		\item \textbf{Runtime Analysis}
+		
+		There're $nk$ subproblems and each of them will cost $O(n)$ time. Therefore, the overall runtime is $O(n^2k)$.
+	
+	\end{enumerate}
+
+\end{qparts}
+
+
+\newpage
+\section{Non-Prefix Code}
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Define subproblem as $N[i]$, which represents the number of ways we can interpret string $s[0 \cdots i]$. And the recursive relation is as follows. $N[0]$ is 0.
+	
+	\[
+		N[i] = \sum_{(k, v) \in d} N[i - \operatorname{len}(v)] \operatorname{Match}(v, i)
+	\]
+	And
+	\[ \operatorname{Match}(v, i) = 
+	\left\{
+		\begin{array}{rcl}
+			1     &      & \text{string } s[i - \operatorname{len}(v) + 1 \cdots i] \text{ matches with } v  \\
+			0      &      & \text{Otherwise}  \\
+		\end{array}
+	\right.
+	\]
+	\item \textbf{Proof of Correctness}
+	
+	The basic case is trivial and correct. Then, suppose we want to compute $N[i]$, and $N[j]$ (where $j<i$) are all optimal solutions. If character $v$ can be matched in $s[i - \operatorname{len}(v) + 1 \cdots i]$, there're $N[i - \operatorname{len}(v)]$ ways to interpret $s[1 \cdots i]$. Sum over all possible $v$ will make $N[i]$ optimal.
+	
+	
+	\item \textbf{Runtime Analysis}
+	
+	This algorithm will solve $n$ subproblems and each of them will check $m$ possible values in $d$. Each check will cost at most $O(l)$ time. Therefore, the overall runtime is $O(nml)$.
+	
+
+\end{qparts}
+
+
+
+
+\newpage
+\section{Breaking Chocolate}
+\begin{qparts}
+	\item \textbf{Subproblem}
+	
+	Define subproblem as $P[a,b][c, d]$, which represents the minimum 	number of breaks needed to separate the raisins out for chocolate with upper left corner position as $(a, b)$ and lower right corner position as $(c, d)$.
+	
+	\item \textbf{Recurrence Relation}
+	\[
+		P[a,b][c,d] = \min( \min_{k=a}^{c}\{ P[a, b][k, d] + P[k, b][c, d] + 1 \}, \min_{k=b}^{d}\{ P[a, b][c, k] + P[a, k][c, d] + 1 \})
+	\]
+	
+	\item \textbf{Runtime Analysis}
+	
+	There're $m^2n^2$ subproblems and each of them will cost $O(m+n)$ time to check each possibility.
+	Therefore, the overall runtime is $O(m^2n^2(m+n))$
+	
+
+\end{qparts}
+
+\newpage
+\section{Three Partition}
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Define subproblem as $S[i][j]$, which represents the minimum cost to arrive at $i$th station with $j$ gallons of gas left.
+	The recursive relation is as follows:
+	\[
+		S[i][j] = \min_{\{ k | k < i \  \&\& \  (d_i - d_k) < (C - j)m \}} \{ S[k][j + \frac{d_i - d_k}{m}] + \frac{d_i - d_k}{m} c_k \}
+	\]
+	
+	In base case, $S[1][x]$ is 0 for all possible $x$. And the final solution is $S[n][0]$.
+
+	\item \textbf{Proof of Correctness}
+	
+	In each iteration, I try to compute the minimum cost that let car comes directly from $k$th station to $i$th station. The only constrain is $(d_i - d_k) < (C - j)m$, because the car can hold at most $C$ gallons of gas. And the answer is $S[n][0]$, because if there's gas left in cat when arriving at the last station. We improve solution by let car add less gas in the previous station.
+	
+	\item \textbf{Runtime Analysis}
+	
+	There're $nC$ subproblems and each of them will cost $O(n)$ time to check each possible previous station. Therefore, the overall runtime is $O(n^2C)$.
+	
+
+\end{qparts}
+
+\newpage
+\section{2-SAT}
+\begin{qparts}
+	
+	\item 
+
+	if $G_I$ has a strongly connected component containing both $x$ and $\neg x$ for some variable $x$. Then there's a path from $x$ to $\neg x$ and a path from $\neg x$ to $x$. The edges in this graph can be considered as implication, so we have $x \Rightarrow  \neg x$ and $\neg x \Rightarrow  x$ by transitive rule.
+	So if $x$ is assigned with true, we have contradiction $true\Rightarrow false$. If  $x$ is assigned with false, we have $true\Rightarrow false$ as well. Therefore this problem has no valid solution.
+	
+	\item
+	
+	Note that the clause $(\alpha \lor \beta)$ is equivalent to $(\neg \alpha  \Rightarrow \beta) \land (\neg \beta\Rightarrow  \alpha)$. The edges added in to graph $G_I$ is symmetric. 
+	
+	I want to prove there's no path between SCCs that contains a literal and its negation.
+	Suppose variable $x$ is in SCC $A$ and variable $\neg x$ is in SCC $B$. And there's a path from $x$ to $\neg x$ that go through vertices $x, v_1, v_2, \cdots v_n, \neg x$.
+	By symmetric property, there exists edges that from $x$ to $\neg v_{n}$, from $\neg v_n$ to $\neg v_{n-1}$, from $\neg v_n$ to $\neg v_{n-1} \cdots$, $\neg v_2$ to $\neg v_{1}$ and from $\neg v_1$ to $\neg x$. 
+	Therefore, variable $v_i$ and $\neg v_i$ are in the same SCC which contradicts the assumption that none of $G_I$ ’s strongly connected components contain both a literal and its negation.
+	
+	Therefore, assign valid value in sink SCC will not affect the assignment of other SCCs. No contradiction will be introduced. And the method mentioned in this question is the easily way to make assignments.
+	
+	\item
+	
+	So first compute SCCs (meta-graph $G_M$ of $G_I$) and assign value according to the previous mentioned way. Compute meta graph will cost $(O(|E| + |V|))$ time and assign will cost linear time. So the total runtime is linear.
+		
+\end{qparts}
+
+
+
+
+
+
+\end{document}
