@@ -146,22 +146,25 @@ Collaborators:Jingyi Xu, Renee Pu
 
 
 \newpage
-\section{Breaking Chocolate}
+\section{Triangulating a polygon}
 \begin{qparts}
-	\item \textbf{Subproblem}
+	\item \textbf{Main Idea}
 	
-	Define subproblem as $P[a,b][c, d]$, which represents the minimum 	number of breaks needed to separate the raisins out for chocolate with upper left corner position as $(a, b)$ and lower right corner position as $(c, d)$.
-	
-	\item \textbf{Recurrence Relation}
+	Define subproblem as $X[i][s_1][s_2]$, which represents whether it's possible to divide first $i$ numbers into three groups, such that the sum of first group is $s_1$ and the sum of second group is $s_2$. Suppose the $i$th number is $A[i]$.
+	The recursive relation is as follows:
 	\[
-		P[a,b][c,d] = \min( \min_{k=a}^{c}\{ P[a, b][k, d] + P[k, b][c, d] + 1 \}, \min_{k=b}^{d}\{ P[a, b][c, k] + P[a, k][c, d] + 1 \})
+		X[i][s_1][s_2] = X[i-1][s_1][s_2] \lor X[i-1][s_1 - A[i]][s_2] \lor X[i-1][s_1][s_2 - A[i]]
 	\]
+	
+	 And the final solution is $X[n][\frac{total}{3}][\frac{total}{3}]$.
+
+	\item \textbf{Proof of Correctness}
+	
+	In base case, $X[1][0][0]$, $X[1][A[1]][0]$ and $X[1][0][A[1]]$ are true. This is trivial. In induction step, for $X[i][s_1][s_2]$ we have three choices, i.g. put $i$th number into first group, second group or third group. $X[i-1][s_1][s_2]$ is the situation that put it into first group. $X[i-1][s_1 - A[i]][s_2]$ is the situation that put it into second group. $X[i-1][s_1][s_2 - A[i]]$ is the situation that put it into third group. So $X[i][s_1][s_2]$ will be optimal and the final answer will be optimal.
 	
 	\item \textbf{Runtime Analysis}
 	
-	There're $m^2n^2$ subproblems and each of them will cost $O(m+n)$ time to check each possibility.
-	Therefore, the overall runtime is $O(m^2n^2(m+n))$
-	
+	There're $n(\sum a_i)^2$ subproblems and each of them will cost $O(1)$ time. Therefore, the overall runtime is $O(n(\sum a_i)^2)$.	
 
 \end{qparts}
 
@@ -170,22 +173,21 @@ Collaborators:Jingyi Xu, Renee Pu
 \begin{qparts}
 	\item \textbf{Main Idea}
 	
-	Define subproblem as $S[i][j]$, which represents the minimum cost to arrive at $i$th station with $j$ gallons of gas left.
+	Define subproblem as $X[i][s_1][s_2]$, which represents whether it's possible to divide first $i$ numbers into three groups, such that the sum of first group is $s_1$ and the sum of second group is $s_2$. Suppose the $i$th number is $A[i]$.
 	The recursive relation is as follows:
 	\[
-		S[i][j] = \min_{\{ k | k < i \  \&\& \  (d_i - d_k) < (C - j)m \}} \{ S[k][j + \frac{d_i - d_k}{m}] + \frac{d_i - d_k}{m} c_k \}
+		X[i][s_1][s_2] = X[i-1][s_1][s_2] \lor X[i-1][s_1 - A[i]][s_2] \lor X[i-1][s_1][s_2 - A[i]]
 	\]
 	
-	In base case, $S[1][x]$ is 0 for all possible $x$. And the final solution is $S[n][0]$.
+	 And the final solution is $X[n][\frac{total}{3}][\frac{total}{3}]$.
 
 	\item \textbf{Proof of Correctness}
 	
-	In each iteration, I try to compute the minimum cost that let car comes directly from $k$th station to $i$th station. The only constrain is $(d_i - d_k) < (C - j)m$, because the car can hold at most $C$ gallons of gas. And the answer is $S[n][0]$, because if there's gas left in cat when arriving at the last station. We improve solution by let car add less gas in the previous station.
+	In base case, $X[1][0][0]$, $X[1][A[1]][0]$ and $X[1][0][A[1]]$ are true. This is trivial. In induction step, for $X[i][s_1][s_2]$ we have three choices, i.g. put $i$th number into first group, second group or third group. $X[i-1][s_1][s_2]$ is the situation that put it into first group. $X[i-1][s_1 - A[i]][s_2]$ is the situation that put it into second group. $X[i-1][s_1][s_2 - A[i]]$ is the situation that put it into third group. So $X[i][s_1][s_2]$ will be optimal and the final answer will be optimal.
 	
 	\item \textbf{Runtime Analysis}
 	
-	There're $nC$ subproblems and each of them will cost $O(n)$ time to check each possible previous station. Therefore, the overall runtime is $O(n^2C)$.
-	
+	There're $n(\sum a_i)^2$ subproblems and each of them will cost $O(1)$ time. Therefore, the overall runtime is $O(n(\sum a_i)^2)$.	
 
 \end{qparts}
 
