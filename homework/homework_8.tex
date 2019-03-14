@@ -112,33 +112,28 @@ Collaborators:Jingyi Xu, Renee Pu
 
 
 \newpage
-\section{Non-Prefix Code}
+\section{Knightmare}
 \begin{qparts}
 	\item \textbf{Main Idea}
 	
-	Define subproblem as $N[i]$, which represents the number of ways we can interpret string $s[0 \cdots i]$. And the recursive relation is as follows. $N[0]$ is 0.
+	First sort all points into clockwise order and denote $D[i][j]$ as the distance between $i$th point and $j$th point, i.g. $D[i][j] = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}$.
 	
+	Define subproblem as $T[i][j]$, which represents the optimal solution to triangulate polygon defined by $i$th point to $j$th point.
+	The recursive relation is as follows. In base case, if $j - i < 3$, $T[i][j]$ is 0.
 	\[
-		N[i] = \sum_{(k, v) \in d} N[i - \operatorname{len}(v)] \operatorname{Match}(v, i)
+		T[i][j] = \min \{ \min_{k=i+2}^{j-2}\{ T[i][k] + T[k][j] + D[i][k] + D[j][k] \}, T[i][j-1] + D[i][j-1], T[i+1][j], + D[i+1][j]\}    
 	\]
-	And
-	\[ \operatorname{Match}(v, i) = 
-	\left\{
-		\begin{array}{rcl}
-			1     &      & \text{string } s[i - \operatorname{len}(v) + 1 \cdots i] \text{ matches with } v  \\
-			0      &      & \text{Otherwise}  \\
-		\end{array}
-	\right.
-	\]
+	
+	
+	 And the final solution is $T[1][n]$.
+
 	\item \textbf{Proof of Correctness}
 	
-	The basic case is trivial and correct. Then, suppose we want to compute $N[i]$, and $N[j]$ (where $j<i$) are all optimal solutions. If character $v$ can be matched in $s[i - \operatorname{len}(v) + 1 \cdots i]$, there're $N[i - \operatorname{len}(v)]$ ways to interpret $s[1 \cdots i]$. Sum over all possible $v$ will make $N[i]$ optimal.
-	
+	In base case, triangle do not need to be triangulated, so the cost is 0. In induction step, for $T[i][j]$, we have $j - i - 1$ ways to choose an vertex $k$, so that breaks it into two or one subproblems. One subproblem is triangulate polygon defined by $i$th point to $k$th point. The other is triangulate polygon defined by $k$th point to $j$th point. Choose the smallest cost among them can guarantee the optimality of $T[i][j]$. Therefore the final answer $T[1][n]$ is optimal. 
 	
 	\item \textbf{Runtime Analysis}
 	
-	This algorithm will solve $n$ subproblems and each of them will check $m$ possible values in $d$. Each check will cost at most $O(l)$ time. Therefore, the overall runtime is $O(nml)$.
-	
+	There're $n^2$ subproblems and each of them will cost $O(n)$ time to check each possible situation. Therefore, the overall runtime is $O(n^3)$.
 
 \end{qparts}
 
@@ -150,21 +145,24 @@ Collaborators:Jingyi Xu, Renee Pu
 \begin{qparts}
 	\item \textbf{Main Idea}
 	
-	Define subproblem as $X[i][s_1][s_2]$, which represents whether it's possible to divide first $i$ numbers into three groups, such that the sum of first group is $s_1$ and the sum of second group is $s_2$. Suppose the $i$th number is $A[i]$.
-	The recursive relation is as follows:
+	First sort all points into clockwise order and denote $D[i][j]$ as the distance between $i$th point and $j$th point, i.g. $D[i][j] = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}$.
+	
+	Define subproblem as $T[i][j]$, which represents the optimal solution to triangulate polygon defined by $i$th point to $j$th point.
+	The recursive relation is as follows. In base case, if $j - i < 3$, $T[i][j]$ is 0.
 	\[
-		X[i][s_1][s_2] = X[i-1][s_1][s_2] \lor X[i-1][s_1 - A[i]][s_2] \lor X[i-1][s_1][s_2 - A[i]]
+		T[i][j] = \min \{ \min_{k=i+2}^{j-2}\{ T[i][k] + T[k][j] + D[i][k] + D[j][k] \}, T[i][j-1] + D[i][j-1], T[i+1][j], + D[i+1][j]\}    
 	\]
 	
-	 And the final solution is $X[n][\frac{total}{3}][\frac{total}{3}]$.
+	
+	 And the final solution is $T[1][n]$.
 
 	\item \textbf{Proof of Correctness}
 	
-	In base case, $X[1][0][0]$, $X[1][A[1]][0]$ and $X[1][0][A[1]]$ are true. This is trivial. In induction step, for $X[i][s_1][s_2]$ we have three choices, i.g. put $i$th number into first group, second group or third group. $X[i-1][s_1][s_2]$ is the situation that put it into first group. $X[i-1][s_1 - A[i]][s_2]$ is the situation that put it into second group. $X[i-1][s_1][s_2 - A[i]]$ is the situation that put it into third group. So $X[i][s_1][s_2]$ will be optimal and the final answer will be optimal.
+	In base case, triangle do not need to be triangulated, so the cost is 0. In induction step, for $T[i][j]$, we have $j - i - 1$ ways to choose an vertex $k$, so that breaks it into two or one subproblems. One subproblem is triangulate polygon defined by $i$th point to $k$th point. The other is triangulate polygon defined by $k$th point to $j$th point. Choose the smallest cost among them can guarantee the optimality of $T[i][j]$. Therefore the final answer $T[1][n]$ is optimal. 
 	
 	\item \textbf{Runtime Analysis}
 	
-	There're $n(\sum a_i)^2$ subproblems and each of them will cost $O(1)$ time. Therefore, the overall runtime is $O(n(\sum a_i)^2)$.	
+	There're $n^2$ subproblems and each of them will cost $O(n)$ time to check each possible situation. Therefore, the overall runtime is $O(n^3)$.
 
 \end{qparts}
 
