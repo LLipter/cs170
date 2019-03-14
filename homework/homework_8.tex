@@ -49,7 +49,7 @@ Collaborators:Jingyi Xu, Renee Pu
 	\item 
 	
 	\[
-		W(x, y, z) = \max \{\frac{1}{6} W(x+1, y, 0)\}		
+		W(x, y, z) = \max \{\frac{1}{6} (1 - W(y, x+1, 0)) + \sum_{i=2}^6 \frac{i}{6} W(x, y, z + i), (1 - W(y, x+ z, 0)) \}		
 	\]
 	
 	\item 
@@ -58,57 +58,22 @@ Collaborators:Jingyi Xu, Renee Pu
 	\begin{enumerate}
 		\item \textbf{Main Idea}
 		
-		Define subproblem $L[i]$ representing the minimum number of beams that can be welded into a $T$-foot beam. And we have the following recursive relation. And let $T[0] = 0$.
+		Alice have two choices, i.g. roll dice or pass. So the probability represented by $W(x, y, z)$ should be maximum number resulted by these two choices. And if her choice results in ending her turn, it's then Bob's turn. So we can represents the winning probability by 1 minus Bob's winning probability, since we assume both of them play optimally.
 		
-		\[
-			L[i] = \min_{j=1}^{k}\{L[i - c_j] + 1\}
-		\]
+		The recursive relation is presented in the previous part. Run dynamic programming algorithm to solve problem according to it.
 		
 		\item \textbf{Proof of Correctness}
 		
-		The base case is obviously correct. Then, suppose we want to compute $L[i]$ and, $L[j]$ (where $j<i$) are optimal solutions. We use the minimum value of $L[j]$ for all possible $j$. This is actually greedy approach and thus guarantee the  optimality of $L[i]$. Therefore, $L[T]$ will be optimal solution.
+		If Alice choose to roll another dice, she has chance of $\frac{1}{6}$ to get 1 and end her turn, which is represented by $\frac{1}{6} (1 - W(y, x+1, 0))$. Or she may roll other number, which is represented by $\sum_{i=2}^6 \frac{i}{6} W(x, y, z + i)$. If Alice choose to pass, she will get $z$ points and end her turn, which is represented by $1 - W(y, x+ z, 0)$.
 		
 		\item \textbf{Runtime Analysis}
 		
-		$T$ iterations is needed to solve $T$ subproblems and each of them will cost $O(k)$ time. Therefore, the overall runtime is $O(kT)$ and $O(T)$ space is needed.
+		There're $N^3$ subproblems and each of them will only cost constant time. Therefore, the total runtime is $O(N^3)$.
 	
 	\end{enumerate}
 		
 \end{qparts}
 
-
-\newpage
-\section{Egg Drop}
-\begin{qparts}
-	\item 
-	
-	Drop the first egg from 14th story. If it doesn't break, drop it from $(14 + 13)$th story. If still it doesn't break, drop it from $(14 + 13 + 12)$th story. Repeat this process until the first egg breaks, and then use the second egg test remaining possible range one by one in increasing story order.
-	
-	14 drops is needed for this strategy. Actually, it doesn't depend on when the first egg breaks, 
-	
-	\item
-	
-	\renewcommand{\theenumii}{\roman{enumii}}
-	\begin{enumerate}
-		\item \textbf{Main Idea}
-		
-		Define subproblem $F[i][j]$ representing the number of drops needed for a $i$ story building and have $j$ eggs.
-		The recursive relation is:		
-		\[
-			F[i][j] = \min_{x = 1}^{i}\{ \max\{ F[i - x][j] + 1 , F[x-1][j-1] + 1 \} \}
-		\]
-		
-		\item \textbf{Proof of Correctness}
-		
-		There're two possible outcomes when dropping egg from $x$th story. If it doesn't break, the solution is between $(x+1)$th story and $i$th story. It can be considered as a new building with $i-x$ stories and can be represented like this $F[i - x][j] + 1$. If it breaks, the solution is between $1$st story and $(x-1)$th story. So it can be represented by $F[x-1][j-1] + 1$. The max operator will make sure we consider the worst case. The min operator will give the optimal strategy.
-		
-		\item \textbf{Runtime Analysis}
-		
-		There're $nk$ subproblems and each of them will cost $O(n)$ time. Therefore, the overall runtime is $O(n^2k)$.
-	
-	\end{enumerate}
-
-\end{qparts}
 
 
 \newpage
@@ -116,24 +81,26 @@ Collaborators:Jingyi Xu, Renee Pu
 \begin{qparts}
 	\item \textbf{Main Idea}
 	
-	First sort all points into clockwise order and denote $D[i][j]$ as the distance between $i$th point and $j$th point, i.g. $D[i][j] = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}$.
+	Denote $L(i)$ as a set that $j$ is in it if there's a knight in position $(i, j)$.
 	
-	Define subproblem as $T[i][j]$, which represents the optimal solution to triangulate polygon defined by $i$th point to $j$th point.
-	The recursive relation is as follows. In base case, if $j - i < 3$, $T[i][j]$ is 0.
+	Define subproblem as $T[i][L(i)][L(i-1)]$, which represents the number of ways to put knights in the first $i$ rows given the knights setting in row $i$ and row $i-1$ as $L(i)$ and $L(i-1)$.
+	
+	The recursive relation is as follows.
 	\[
-		T[i][j] = \min \{ \min_{k=i+2}^{j-2}\{ T[i][k] + T[k][j] + D[i][k] + D[j][k] \}, T[i][j-1] + D[i][j-1], T[i+1][j], + D[i+1][j]\}    
+		T[i][L(i)][L(i-1)] = \sum_{\{L(i-2) | \text{ knights in } L(i-2) \text{ cannot attack knights in }L(i) \}}(T[i-1][L(i-1)][L(i-2)])
 	\]
 	
 	
-	 And the final solution is $T[1][n]$.
+	 And the final solution is $\sum_{L(i)}\sum_{L(i-1)}T[N][L(i)][L(i-1)]$.
 
 	\item \textbf{Proof of Correctness}
 	
-	In base case, triangle do not need to be triangulated, so the cost is 0. In induction step, for $T[i][j]$, we have $j - i - 1$ ways to choose an vertex $k$, so that breaks it into two or one subproblems. One subproblem is triangulate polygon defined by $i$th point to $k$th point. The other is triangulate polygon defined by $k$th point to $j$th point. Choose the smallest cost among them can guarantee the optimality of $T[i][j]$. Therefore the final answer $T[1][n]$ is optimal. 
+	The idea is that only knights in row $i-2$ can attack knights in row $i$. So given a specific setting of knights in row $i$. I just need to iterate through all possible combination of settings in row $i-1$ and $i-2$. And sum those number together will give the optimal number for $T[i][L(i)][L(i-1)]$.
 	
 	\item \textbf{Runtime Analysis}
 	
-	There're $n^2$ subproblems and each of them will cost $O(n)$ time to check each possible situation. Therefore, the overall runtime is $O(n^3)$.
+	Each row has at most $2^M$ situations to put knights. 
+	So, there're $N(2^M)^2$ subproblems and each of them will cost $O(2^M)$ time to check each possible situation. Therefore, the overall runtime is $O(N(2^M)^3) = O(N2^{3M})$.
 
 \end{qparts}
 
