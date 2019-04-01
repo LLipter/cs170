@@ -91,10 +91,10 @@ Collaborators:Jingyi Xu, Renee Pu
 		\max p
 	\]
 	\[
-		p \le 4x_1 +2x_2
+		p \le 4x_1 +2x_2 \text{ (payoff when Bob take strategy 1)}
 	\]
 	\[
-		p \le x_1 +5x_2
+		p \le x_1 +5x_2 \text{ (payoff when Bob take strategy 2)}
 	\]
 	\[
 		x_1 + x_2 = 1
@@ -240,6 +240,16 @@ Collaborators:Jingyi Xu, Renee Pu
 	According to \textbf{Max-flow min-cut theorem}, the size of the maximum flow in a network equals the capacity of the smallest $(s, t)$-cut. Since any cut in G has capacity at least 1, the max flow from $s$ to $t$ is at least 1.
 	
 	\item
+	
+	Suppose a flow $f$ send 1 unit along the shortest path from $s$ to $t$, the length of $f$ is $1 \times d(s, t) = d(s, t)$. Therefore, $d_{flow}(s,t)$ is smaller than or equal to $d(s,t)$ by definition, i.e. $d_{flow}(s,t) \le d(s,t)$.
+	
+	In general, a flow can send a fraction of unit along different path from $s$ to $t$. Suppose flow $f$ send $f_1, f_2, \cdots f_n$ units along different path with length $d_1, d_2, \cdots d_n$. And $\sum_{i=1}^n f_i = 1$.
+	
+	\[
+		d_{flow}(s,t) = \sum_{i=1}^n d_if_i \ge \sum_{i=1}^n d(s,t) f_i = d(s,t) \sum_{i=1}^n  f_i = d(s,t)
+	\]
+	
+	Since $d_{flow}(s,t) \le d(s,t)$ and $d_{flow}(s,t) \ge d(s,t)$, $d_{flow}$ must equal to $d(s,t)$.
 		
 \end{qparts}
 
