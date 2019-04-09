@@ -109,69 +109,19 @@ Collaborators:Jingyi Xu, Renee Pu
 
 
 \newpage
-\section{Zero Sum Games}
+\section{Domination}
 \begin{qparts}
 	\item 
 	
-	$x_1$ is the probability that Alice will play strategy $1$. 
-	
-	$x_2$ is the probability that Alice will play strategy $2$.
-	
-	$p$ is Alice's payoff
+	It should be 0 since choosing E instead will always give a better payoff.
 	
 	\item
 	
-	\[
-		\max p
-	\]
-	\[
-		p \le 4x_1 +2x_2 \text{ (payoff when Bob take strategy 1)}
-	\]
-	\[
-		p \le x_1 +5x_2 \text{ (payoff when Bob take strategy 2)}
-	\]
-	\[
-		x_1 + x_2 = 1
-	\]
-	\[
-		x_1 \ge 0
-	\]
-	\[
-		x_2 \ge 0
-	\]
-	\[
-		p \ge 1
-	\]
+	It should also be 0 since choosing B instead will always give a better payoff(column player wants to minimize the payoff).
 	
 	\item
 	
-	\[
-		\max p
-	\]
-	\[
-		p \le 4x_1 +2(1 - x_1) = 2x_1 + 2
-	\]
-	\[
-		p \le x_1 +5(1 - x_1) = -4x_1 + 5
-	\]
-	\[
-		0 \le x_1 \le 1
-	\]
-	\[
-		p \ge 1
-	\]
-	
-	\item \text{ }
-	
-	\begin{figure}[h]
-	\centering
-	\includegraphics[width=.8\textwidth]{feasible_region.png}
-	\caption{\label{fig:feasible_region}Feasible Region}
-	\end{figure}
-	
-	\item
-	
-	The optimal solution is $(\frac{1}{2}, \frac{1}{2})$ and the value of game is 3.
+	Both of them should be $(0.5, 0.5)$, since they are completely symmetric
 	
 \end{qparts}
 
