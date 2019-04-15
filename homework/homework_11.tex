@@ -44,16 +44,73 @@ Collaborators:Jingyi Xu, Renee Pu
 \begin{qparts}
 	\item \textbf{Main Idea}
 	
-	Build the residual network based on maximum flow $f$. Then find a path from $t$ to $s$ that go through edge $(v, u)$ in residual network. Push 1 unit flow into this path and fix the wrong capacity from $c_{uv}$ to $c_{uv} - 1$. Then run the original max-flow algorithm starting from this residual network.
-
+	Since $G$ is a bipartite graph, we can split $V$ into two disjoint set $L$ and $R$ such that there's no edge linking two vertices in the same set.
+	
+	Then, run max-flow algorithm on following graph $G^\prime$. Add nodes $s$ and $t$ into the graph. Add a directed edge from $s$ to every node in $L$ and from every node in $R$ to $t$. Convert the undirected edges between $L$ and $R$ to directed edges. Set the capacity of every edge to 1. As textbook mentioned, this max-flow can be converted into a max-matching.
+	
+	A minimum vertex cover can be constructed as follows. Let $U$ be the set of unmatched vertices in $L$, and $Z$ be the set of vertices that are either in $U$ or are connected to $U$ by alternating paths(a path of odd length that starts and ends with a non-covered vertex, and whose edges alternate between matched edges and unmatched edges). Let $K = (L \setminus Z) \cup (R \cap Z)$. Z is the minimum vertex cover we're looking for.
+	
 	\item \textbf{Proof of Correctness}
 	
-	Pushing 1 unit back from $t$ to $s$ that go through edge $(v, u)$ will make the flow go through edge $(u, v)$ be valid. Then run the original max-flow algorithm again from this is sure will give an optimal solution.
+	Suppose that $M$ is a maximum matching. No vertex in a vertex cover can cover more than one edge of $M$. So $|M|$ is a lower bound for vertex cover and if we can construct a vertex cover with $|M|$ vertices, it must be a minimum cover.
 	
-	\item \textbf{Runtime Analysis}
+	Every edge $e$ in $E$ either belongs to an alternating path, or it has a left endpoint in $K$. If $e$ is matched but not in an alternating path, then its left endpoint cannot be in an alternating path (because two matched edges can not share a vertex) and thus belongs to $(L \setminus Z)$. Alternatively, if $e$ is unmatched but not in an alternating path, then its left endpoint cannot be in an alternating path, for such a path could be extended by adding $e$ to it. Thus, $K$ forms a vertex cover with size $|M|$.
 	
-	Build residual network will cost $O(|E|)$ time. Find a path from $t$ to $s$ that go through edge $(v, u)$ by DFS or BFS will cost $O(|V| + |E|)$ time. Then push 1 unit into this path will cost at most $|E|$ time. Since the max-flow solution after repairing capacity of edge $(u, v)$ cannot be larger than the original one. At most 1 iteration is needed if run max-flow algorithm starting from this. So total runtime is still linear, which is $O(|V| + |E|)$.
+\end{qparts}
 
+\newpage
+\section{Direct Bipartite Matching}
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	To prove $M$ is a maximum matching if and only if there does not exist an alternating path, it's equivalent to prove $M$ is \textbf{not} a maximum matching if and only if there does \textbf{exist} an alternating path.
+	
+	Suppose $M$ is not a maximum matching, run the max-flow algorithm on this graph. At least one augment path can be found. Denote it as $s \to v_1 \to v_2 \to \cdots \to v_{2n} \to t$. When $i$ is odd, $v_i \in L$ and $v_i \to v_{i+1} \in E \setminus M$, otherwise $v_i \in R$ and $v_i \to v_{i+1} \in M$. The number of edges in this path is odd. Therefore, it is an alternating path.
+	
+	Suppose there does exist an alternating path. Denote it as $v_1 \to v_2 \to \cdots \to v_{2n}$. By definition, $(v_1, v_2), (v_3, v_4) \cdots (v_{2n-1}, v_{2n}) \in E \setminus M$ and denote it as $E_1$. Denote the remaining edges as $E_2$. We can construct a larger flow $M^\prime$ as follows.
+	
+	\[
+		M^\prime = (M \cup E_1) \setminus E_2
+	\]
+	
+	Therefore, $M$ cannot be a maximum matching.
+	
+	\item
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Create a dumb node $s$ and add edge $(s, v)$ if $v$ is an unmatched vertex. Use a global variable $depth$ to record the depth of the search tree. If $depth$ is odd, only unmatched edges can be explored. Otherwise only matched edges can be explored. Run BFS starting from $s$.
+		
+		\item \textbf{Proof of Correctness}
+		
+		The alternating path will start from an unmatched point and alternating between matched and unmatched edges. The variable $depth$ will be helpful to determine whether to explore matched edges or unmatched edges.
+		
+		\item \textbf{Runtime Analysis}
+		
+		The modified BFS will not change overall runtime. Therefore it is $O(|V| + |E|)$.
+		
+	\end{enumerate}
+	
+	\item
+	\renewcommand{\theenumii}{\roman{enumii}}
+	\begin{enumerate}
+		\item \textbf{Main Idea}
+		
+		Find an alternating path use the algorithm in part b and construct a larger matching use method mentioned in part a.
+		Keep doing this until there's no alternating path exists.
+		
+		\item \textbf{Proof of Correctness}
+		
+		As proved in part a, $M$ is a maximum matching if and only if there does not exist an alternating path. And if there's an alternating path, part b algorithm will find it.
+		
+		\item \textbf{Runtime Analysis}
+		
+		The algorithm in part b will be run at most $O(|V|)$ times, and each run will cost $O(|V| + |E|)$.
+		Therefore, the overall runtime is  $O((|V| + |E|)|V|) = O(|V||E|)$.
+		
+	\end{enumerate}
+	
 \end{qparts}
 
 
