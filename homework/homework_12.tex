@@ -1,0 +1,399 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{12} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+	
+\newpage
+\section{Experts Alternatives}
+\begin{qparts}
+	\item 
+	
+	The adversary can set $\forall t$ $c_1^t$  to be 1, and all other costs to be 0.
+	\begin{align*}
+		\max_{C_i^t} R
+		&= \max_{C_i^t} \frac{1}{T}(\sum_{t=1}^Tc_{i(t)}^t - \min_{1\le i \le n} \sum_{t=1}^T c_i^t) \\
+		&= \frac{1}{T}(\sum_{t=1}^Tc_{1}^t - \min_{1\le i \le n} \sum_{t=1}^T c_i^t) \\
+		&= \frac{1}{T}(\sum_{t=1}^T1- \sum_{t=1}^T 0) \\
+		&= 1
+	\end{align*}
+	
+	\item 
+	
+	For each step $t$, the adversary can set $c_i^t$ to be 1 where $p_i^t$ is 1, and all other costs to be 0.
+	
+	In worst case, my strategy is choose experts as evenly as possible. 
+	
+	Therefore, $\min_{1\le i \le n} \sum_{t=1}^T c_i^t = \lfloor \frac{T}{n}\rfloor$.
+	\begin{align*}
+		\max_{C_i^t} R
+		&= \max_{C_i^t} \frac{1}{T}(\sum_{t=1}^Tc_{i(t)}^t - \min_{1\le i \le n} \sum_{t=1}^T c_i^t) \\
+		&= \frac{1}{T}(\sum_{t=1}^T1- \lfloor \frac{T}{n}\rfloor) \\
+		&= \frac{1}{T}(T - \lfloor \frac{T}{n}\rfloor)
+	\end{align*}
+	
+	\item 
+	
+	Suppose $p_{i(min)}$ is the smallest number among $p_i$. The adversary can set $c_{i(min)}^t = c_{i(min)} = 0$, and all other costs to be 1.
+	
+	\begin{align*}
+		\max_{C_i^t} E[R]
+		&= \max_{C_i^t} E[\frac{1}{T}(\sum_{t=1}^Tc_{i(t)}^t - \min_{1\le i \le n} \sum_{t=1}^T c_i^t)] \\
+		&= \max_{C_i^t} \frac{1}{T}(E[\sum_{t=1}^Tc_{i(t)}^t] - \min_{1\le i \le n} \sum_{t=1}^T c_i^t) \\
+		&= \max_{C_i^t} \frac{1}{T}(\sum_{t=1}^T\sum_{i=1}^np_ic_{i}^t - \min_{1\le i \le n} \sum_{t=1}^T c_i^t) \\
+		&= \max_{C_i^t} (\sum_{i=1}^np_ic_{i} - \min_{1\le i \le n} c_i) \\
+		&= (1 - p_{i(min)}) - 0 \\
+		&= 1 - p_{i(min)}
+	\end{align*}
+	
+	A evenly distributed $p_i$ will minimize this regret. i.e. $p_i = \frac{1}{n}$.
+	
+\end{qparts}
+
+\newpage
+\section{Follow the regularized leader}
+\begin{qparts}
+	\item
+	
+	Set $A(t, 1) = 0$ if $t$ is odd, and $A(t, 1) = 1$ otherwise. 
+	
+	Set $A(t, 2) = 0$ if $t$ is even, and $A(t, 2) = 0.999$ otherwise.
+	
+	My algorithm will keep alternating between strategy 1 and 2. It will alway choose the 0 payoff. But sticking to strategy 1 will give a payoff of 50. Sticking to strategy 2 will give a payoff of 49.95. 
+	
+	\item
+	
+	Denote $c_t(i) = \sum_{1\le \tau \le t-1} A(\tau, i)$. Denote $p_t(i_{max})$ to be the largest number among $p_t(i)$.
+	
+	To maximize $\sum_{i=1}^n(p_t(i)c_t(i))$, $p_t(i_{max})$ will be 1 and all others will be set with 0. Therefore, this algorithm is literally degenerate to the previous algorithm. Because of convexity, a distribution $D(t)$ can always be optimized until it reach a "single point".
+	
+	\item
+	
+	\begin{align*}
+		\sum_{i=1}^n \Bigg( p_t(i) \cdot \sum_{1\le \tau \le t-1} A[\tau,i] - \eta p_t(i) \ln p_t(i) \Bigg)
+		&=
+		\sum_{i=1}^n \Bigg( p_t(i) \cdot \bigg ( \sum_{1\le \tau \le t-1} A[\tau,i] - \eta \ln p_t(i) \bigg ) \Bigg) \\
+		&=
+		\eta \sum_{i=1}^n \Bigg( p_t(i) \cdot \bigg ( \sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} - \ln p_t(i) \bigg ) \Bigg) \\
+		&= 
+		\eta \sum_{i=1}^n \Bigg( p_t(i) \cdot \ln e^{\bigg ( \sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} - \ln p_t(i) \bigg )} \Bigg) \\
+		& \le
+		\eta \ln \Bigg( \sum_{i=1}^{n} p_t(i) \cdot e^{\bigg ( \sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} - \ln p_t(i) \bigg)} \Bigg) \\
+		&=
+		\eta \ln \Bigg( \sum_{i=1}^{n} p_t(i) \cdot \frac{e^{\bigg ( \sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} \bigg)}}{e^{ \ln p_t(i)}} \Bigg) \\
+		&=
+		\eta \ln \Bigg( \sum_{i=1}^{n} p_t(i) \cdot \frac{e^{\bigg ( \sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} \bigg)}}{p_t(i)} \Bigg) \\
+		&=
+		\eta \ln \Bigg( \sum_{i=1}^{n} e^{\bigg ( \sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} \bigg)} \Bigg) \\
+	\end{align*}
+	
+	\item
+	
+	Let $l_i^{(t)} = - A[t, i]$, $(1 - \epsilon) = e^{- \frac{1}{\eta}}$ and $w_i^{(0)} = 1$. Denote $A[i] = \sum_{\tau=1}^{t-1} A[\tau, i]$
+	\[
+		w_i^{(t)} 
+		= w_i^{(t-1)}(1 - \epsilon)^{l_i^{(t-1)}} 
+		= w_i^{(0)}(1 - \epsilon)^{\sum_{\tau=1}^{t-1} l_i^{(\tau)}}
+		= (1 - \epsilon)^{-\sum_{\tau=1}^{t-1}A[\tau, i]}
+		= e^{ \frac{\sum_{\tau=1}^{t-1} A[\tau, i]}{\eta}}
+		= e^{ \frac{A[i]}{\eta}}
+	\]
+	Therefore, 
+	\[
+		p_t(i)
+		= \frac{w_i^{(t)}}{\sum_{j=1}^{n} w_j^{(t)} }
+		= \frac{e^{ \frac{\sum_{\tau=1}^{t-1} A[\tau, i]}{\eta}}}{\sum_{j=1}^{n} e^{ \frac{\sum_{\tau=1}^{t-1} A[\tau, j]}{\eta}}}
+		= \frac{e^{ \frac{A[i]}{\eta}}}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+	\]
+	Then, 
+	\begin{align*}
+		(1)
+		&=
+		\sum_{i=1}^n 
+		\Bigg( 
+		p_t(i) 
+		\cdot 
+		\sum_{1\le \tau \le t-1} A[\tau,i] 
+		- 
+		\eta p_t(i) \ln p_t(i) 
+		\Bigg) \\
+		&=
+		\sum_{i=1}^n 
+		\Bigg( 
+		p_t(i) 
+		\cdot 
+		\bigg ( 
+		A[i]
+		- 
+		\eta \ln p_t(i) 
+		\bigg ) 
+		\Bigg) \\
+		&=
+		\sum_{i=1}^n 
+		\Bigg( 
+		\frac{e^{ \frac{A[i]}{\eta}}}
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}} } 
+		\cdot 
+		\bigg ( 
+		A[i]
+		- 
+		\eta \ln 
+		\frac{e^{ \frac{A[i]}{\eta}}}
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} 
+		\bigg ) 
+		\Bigg) \\
+		&=
+		\frac{1}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+		\sum_{i=1}^n \Bigg( 
+		e^{ \frac{A[i]}{\eta}}
+		\cdot 
+		\bigg ( 
+		A[i]
+		- 
+		\eta \ln 
+		\frac{e^{ \frac{A[i]}{\eta}}}
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} 
+		\bigg ) 
+		\Bigg) \\
+		&=
+		\frac{1}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+		\sum_{i=1}^n \Bigg( 
+		e^{ \frac{A[i]}{\eta}}
+		\cdot 
+		\bigg ( 
+		A[i]
+		- 
+		\eta \ln 
+		e^{\frac{A[i]}{\eta}}
+		+
+		\eta \ln 
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} 
+		\bigg ) 
+		\Bigg) \\
+		&=
+		\frac{1}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+		\sum_{i=1}^n \Bigg( 
+		e^{ \frac{A[i]}{\eta}}
+		\cdot 
+		\bigg ( 
+		A[i]
+		- 
+		\eta
+		\frac{A[i]}{\eta}
+		+
+		\eta \ln 
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} 
+		\bigg ) 
+		\Bigg) \\
+		&=
+		\frac{1}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+		\sum_{i=1}^n \Bigg( 
+		e^{ \frac{A[i]}{\eta}}
+		\cdot 
+		\bigg ( 
+		A[i]
+		- 
+		A[i]
+		+
+		\eta \ln 
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} 
+		\bigg ) 
+		\Bigg) \\
+		&=
+		\frac{1}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+		\sum_{i=1}^n \Bigg( 
+		e^{ \frac{A[i]}{\eta}}
+		\cdot 
+		\eta \ln 
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} 
+		\Bigg) \\
+		&=
+		\frac{1}{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}}
+		\cdot 
+		\sum_{i=1}^n
+		e^{ \frac{A[i]}{\eta}}
+		\cdot 
+		\eta \ln 
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} \\
+		&=
+		\eta \ln 
+		{\sum_{j=1}^{n} e^{ \frac{A[j]}{\eta}}} \\
+		&=
+		\eta \ln 
+		\Bigg( 
+		\sum_{i=1}^{n} 
+		e^{
+		\bigg ( 
+		\sum_{1\le \tau \le t-1} \frac{A[\tau,i]}{\eta} 
+		\bigg)} 
+		\Bigg) \\
+		&=
+		(2)
+	\end{align*}
+	
+	Therefore, $\epsilon = 1 - e^{-\frac{1}{\eta}}$.
+
+	
+\end{qparts}
+
+
+\newpage
+\section{Linear Classifiers using Multiplicative Weights}
+\begin{qparts}
+	
+	\item 
+
+	Denote $X(i) = \sum_{t=1}^T(l_t[i] + \epsilon | l_t[i] | )$. And denote $i^* = \arg\min_{i=1}^n X(i)$.
+	
+	
+	\begin{align*}
+		\sum_{t=1}^T \langle l_t,x_t \rangle
+		&\le
+		\frac{\log(n)}{\epsilon} + \min_{i=1}^n \sum_{t=1}^T(l_t[i] + \epsilon | l_t[i] | ) \\
+		&=
+		\frac{\log(n)}{\epsilon} + X(i^*) \\
+		&=
+		\frac{\log(n)}{\epsilon} + p^*[i^*]X(i^*) + (1 - p^*[i^*])X(i^*) \\
+		&\le
+		\frac{\log(n)}{\epsilon} + p^*[i^*]X(i^*) + \sum_{i\ne i^*} p^*[i]X(i) \\
+		&=
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n p^*[i]X(i) \\
+		&=
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n p^*[i]( \sum_{t=1}^T(l_t[i] + \epsilon | l_t[i] | )) \\
+	\end{align*}
+	
+	\item
+	
+	The experts are the $n$ features in $a$.
+	
+	\item
+	
+	$l(t)=-\sum_{i=1}^{m}a_i$
+	
+	\item
+	
+	The algorithm stops when $\langle a_i,x \rangle \ge 0$ for all $1 \le i \le m$.
+	
+	\item
+	
+	Denote $A = \sum_{i=1}^m a_i$.
+	\[
+		w_i^{(t)} 
+		= w_i^{(t-1)}(1 - \epsilon)^{l_i^{(t-1)}} 
+		= w_i^{(0)}(1 - \epsilon)^{\sum_{\tau=1}^{t-1} l_i^{(\tau)}}
+		= (1 - \epsilon)^{-\sum_{\tau=1}^{t-1}A_i}
+		= (1 - \epsilon)^{(1-t)A_i}
+	\]
+	Therefore,
+	\[
+		\widetilde x_i
+		= \frac{w_i^{(t)}}{\sum_{j=1}^{n} w_j^{(t)} }
+		= \frac{(1 - \epsilon)^{(1-t)A_i}}{\sum_{j=1}^n(1 - \epsilon)^{(1-t)A_j}}
+		= \frac{(1 - \frac{1}{2}\eta)^{(1-t)A_i}}{\sum_{j=1}^n(1 - \frac{1}{2}\eta)^{(1-t)A_j}}
+	\]
+	See next page,
+	
+	\begin{align*}
+		\sum_{t=1}^T \langle l_t,x_t \rangle
+		&\le
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n p^*[i]( \sum_{t=1}^T(l_t[i] + \epsilon | l_t[i] | )) \\
+		\sum_{t=1}^T \langle -A,x_t \rangle
+		&\le
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-A_i + \epsilon | -A_i | )) \\
+		\sum_{t=1}^T \langle -A,x_t \rangle
+		&\le
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-A_i + \epsilon)) \\
+		-\sum_{t=1}^T \langle A,x_t \rangle
+		&\le
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-A_i + \epsilon)) \\
+		\sum_{t=1}^T \langle A,x_t \rangle
+		&\ge
+		-\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(A_i - \epsilon)) \\
+		\sum_{t=1}^T \langle A,x_t \rangle
+		&\ge
+		-\frac{\log(n)}{\epsilon} 
+		+ \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T A_i 
+		-  \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T \epsilon \\
+		\sum_{t=1}^T \langle A,x_t \rangle
+		&\ge
+		-\frac{\log(n)}{\epsilon} 
+		+ \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T A_i 
+		- T \epsilon \\
+		\sum_{t=1}^T \langle A,x_t \rangle
+		&\ge
+		-\frac{\log(n)}{\epsilon} 
+		+ T \langle A,\widetilde x_i \rangle
+		- T \epsilon \\
+		\sum_{t=1}^T \langle A,x_t \rangle
+		&\ge
+		-\frac{\log(n)}{\epsilon} 
+		+ T m\eta
+		- T \epsilon \\
+		\sum_{t=1}^T \langle A,x_t \rangle
+		&\ge
+		-\frac{2\log(n)}{\eta} 
+		+ T m\eta
+		- \frac{T \eta}{2} \\
+	\end{align*}
+	Let the right hand side be 0.
+	\begin{align*}
+		-\frac{2\log(n)}{\eta} 
+		+ T m\eta
+		- \frac{T \eta}{2} 
+		&=
+		0 \\
+		T m\eta
+		- \frac{T \eta}{2} 
+		&=
+		\frac{2\log(n)}{\eta}  \\
+		T(m\eta - \frac{\eta}{2})
+		&=
+		\frac{2\log(n)}{\eta}  \\
+		T
+		&=
+		\frac{2\log(n)}{\eta^2(m - \frac{1}{2})}  \\	
+	\end{align*}
+\end{qparts}
+
+
+
+
+
+
+
+\end{document}
