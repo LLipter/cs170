@@ -1,0 +1,179 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{13} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+	
+\newpage
+\section{One-to-One Functions}
+
+	Denote $P$ to be the probability that a randomly chosen hash function $h$ from $\mathcal{H}$ is one-to-one. 
+	\begin{align*}
+		P
+		&= 
+		1 - P(\bigcup_{1 \le i < j \le n} h(i) = h(j))\\
+		&\ge
+		1 - \sum_{1 \le i < j \le n} P(h(i) = h(j))\\
+		&=
+		1 - \frac{n(n-1)}{2} \cdot \frac{1}{n^3} \\
+		&=
+		1 - \frac{n-1}{2} \cdot \frac{1}{n^2} \\
+		&\ge
+		1 - \frac{n}{2} \cdot \frac{1}{n^2} \\
+		&=
+		1 -  \frac{1}{2n} \\
+		&\ge
+		1 - \frac{1}{n}
+	\end{align*}
+	
+
+
+\newpage
+\section{Approximate Median}
+
+\begin{qparts}
+	\item \textbf{Main Idea}
+	
+	Set $t = \frac{1}{2 \epsilon^2} \ln (\frac{2}{\delta})$. Run the reservoir sampling of $t$ elements without replacement algorithm in notes. Output the median elements in these $t$ samples as result. 
+
+	
+	\item \textbf{Proof of Correctness}
+	
+	Create the random variables as follows,
+	\[
+		X_i=
+		\begin{cases}
+		1& i\text{th sample is in }\frac{1}{2}\text{ percentile}\\
+		0& \text{otherwise}
+		\end{cases}
+	\]
+	Therefore, $p = E[X+i] = \frac{1}{2}$.
+	
+	According to Hoeffding Bound,
+	\begin{align*}
+		Pr\Big[\Big \arrowvert \frac{1}{t} \cdot \sum_{t=1}^t X_i - p \Big \arrowvert \ge \epsilon \Big] 
+		&\le 
+		2e^{-2\epsilon^2t}\\
+		Pr\Big[\Big \arrowvert \frac{1}{t} \cdot \sum_{t=1}^t X_i - \frac{1}{2} \Big \arrowvert \ge \epsilon \Big] 
+		&\le 
+		2e^{-2\epsilon^2t}\\
+		Pr\Big[\Big \arrowvert \frac{1}{t} \cdot \sum_{t=1}^t X_i - \frac{1}{2} \Big \arrowvert \ge \epsilon \Big] 
+		&\le 
+		\delta\\
+		Pr\Big[\Big \arrowvert \frac{1}{t} \cdot \sum_{t=1}^t X_i - \frac{1}{2} \Big \arrowvert \le \epsilon \Big] 
+		&\ge
+		1- \delta\\
+		Pr\Big[- \epsilon \le \frac{1}{t} \cdot \sum_{t=1}^t X_i - \frac{1}{2} \le \epsilon \Big] 
+		&\ge
+		1- \delta\\
+		Pr\Big[\frac{1}{2} - \epsilon \le \frac{1}{t} \cdot \sum_{t=1}^t X_i \le \frac{1}{2} + \epsilon \Big] 
+		&\ge
+		1- \delta\\
+	\end{align*}
+	Therefore, less than $\frac{1}{2}$ of the samples will be from the $\frac{1}{2} - \epsilon$ and $\frac{1}{2} + \epsilon$  percentile.
+	
+	\item \textbf{Space Complexity}
+	
+	The reservoir will need $O(t) = O(\frac{1}{2 \epsilon^2} \ln (\frac{2}{\delta}))$ space.
+	
+
+	
+\end{qparts}
+
+\newpage
+\section{Count-Median-Sketch}
+
+\begin{qparts}
+	\item 
+	
+	For a fixed choice of the functions $h_i$,
+	\[
+		M[i, h_i(a)] = f_a + \sum_{b\ne a:h_i(b)=h_i(a)} f_b
+	\]
+	The expectation of $M[i,h_i(a)]$ over the random choice of the function $h_i$ is,
+	\begin{align*}
+		\mathbb{E}[M[i, h_i(a)]]
+		&=
+		\mathbb{E}[ f_a + \sum_{b\ne a:h_i(b)=h_i(a)} f_b] \\
+		&=
+		f_a + \sum_{b \ne a}Pr[h_i(a) = h_i(b)] \cdot f_b \\
+		&=
+		f_a + \frac{1}{B}\sum_{b \ne a} f_b \\
+		&\le
+		f_a + \frac{n}{B}
+	\end{align*}
+	Applying Markov’s inequality to the random variable $M[i,h_i(a)]-f_a$,
+	\begin{align*}
+		P(M[i,h_i(a)]-f_a \ge \frac{2n}{B})
+		&\le
+		\frac{\mathbb{E}[M[i,h_i(a)]-f_a]}{\frac{2n}{B}} \\
+		P(M[i,h_i(a)] \ge f_a + \frac{2n}{B})
+		&\le
+		\frac{\frac{n}{B}}{\frac{2n}{B}} \\
+		P(M[i,h_i(a)] \ge f_a + \frac{2n}{B})
+		&\le
+		\frac{1}{2}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		P(\text{median}_{i = 1\dots, l} M[i,h_i(a)] \ge f_a + \frac{2n}{B})
+		&=
+		P(\text{half of elements fit this equality}) \\
+		&= 
+		\Big (P(M[i,h_i(a)] \ge f_a + \frac{2n}{B}) \Big)^{\frac{l}{2}} \\
+		&\le
+		\frac{1}{2^{\frac{l}{2}}}
+	\end{align*}	
+	
+	
+	\item
+	
+	Generally, if there're more additions than deletions. The majority of $M[i,h_i(a)]-f_a$ are non-negative. Therefore, it's still reasonable to use the Markov’s inequality to solve this problem. And according to (a), we only need to half of elements to meet the inequality. Therefore, the deduction should work most of times.
+	
+	\item
+	
+	No, because the \textit{Count-Min-Sketch} only works when all $M[i,h_i(a)]-f_a$ are non-negative. This requirement may not be satisfied if deletions are allowed. It can be violated easily.
+	
+
+\end{qparts}
+
+
+
+
+
+\end{document}

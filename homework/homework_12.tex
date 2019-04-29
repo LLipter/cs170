@@ -303,28 +303,26 @@ Collaborators:Jingyi Xu, Renee Pu
 	
 	\item
 	
-	$l(t)=-\sum_{i=1}^{m}a_i$
+	$l(t)=-a_j$
 	
 	\item
 	
 	The algorithm stops when $\langle a_i,x \rangle \ge 0$ for all $1 \le i \le m$.
 	
 	\item
-	
-	Denote $A = \sum_{i=1}^m a_i$.
+
 	\[
 		w_i^{(t)} 
 		= w_i^{(t-1)}(1 - \epsilon)^{l_i^{(t-1)}} 
 		= w_i^{(0)}(1 - \epsilon)^{\sum_{\tau=1}^{t-1} l_i^{(\tau)}}
-		= (1 - \epsilon)^{-\sum_{\tau=1}^{t-1}A_i}
-		= (1 - \epsilon)^{(1-t)A_i}
+		= (1 - \epsilon)^{-\sum_{\tau=1}^{t-1}a_t(i)}
 	\]
 	Therefore,
 	\[
 		\widetilde x_i
 		= \frac{w_i^{(t)}}{\sum_{j=1}^{n} w_j^{(t)} }
-		= \frac{(1 - \epsilon)^{(1-t)A_i}}{\sum_{j=1}^n(1 - \epsilon)^{(1-t)A_j}}
-		= \frac{(1 - \frac{1}{2}\eta)^{(1-t)A_i}}{\sum_{j=1}^n(1 - \frac{1}{2}\eta)^{(1-t)A_j}}
+		= \frac{(1 - \epsilon)^{\sum_{\tau=1}^{t-1}a_t(i)}}{\sum_{j=1}^n(1 - \epsilon)^{\sum_{\tau=1}^{t-1}a_t(j)}}
+		= \frac{(1 - \frac{1}{2}\eta)^{\sum_{\tau=1}^{t-1}a_t(i)}}{\sum_{j=1}^n(1 - \frac{1}{2}\eta)^{\sum_{\tau=1}^{t-1}a_t(j)}}
 	\]
 	See next page,
 	
@@ -332,61 +330,58 @@ Collaborators:Jingyi Xu, Renee Pu
 		\sum_{t=1}^T \langle l_t,x_t \rangle
 		&\le
 		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n p^*[i]( \sum_{t=1}^T(l_t[i] + \epsilon | l_t[i] | )) \\
-		\sum_{t=1}^T \langle -A,x_t \rangle
+		\sum_{t=1}^T \langle -a_t,x_t \rangle
 		&\le
-		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-A_i + \epsilon | -A_i | )) \\
-		\sum_{t=1}^T \langle -A,x_t \rangle
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-a_t(i) + \epsilon | -a_t(i) | )) \\
+		\sum_{t=1}^T \langle -a_t,x_t \rangle
 		&\le
-		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-A_i + \epsilon)) \\
-		-\sum_{t=1}^T \langle A,x_t \rangle
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-a_t(i)+ \epsilon)) \\
+		-\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\le
-		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-A_i + \epsilon)) \\
-		\sum_{t=1}^T \langle A,x_t \rangle
+		\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(-a_t(i) + \epsilon)) \\
+		\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\ge
-		-\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(A_i - \epsilon)) \\
-		\sum_{t=1}^T \langle A,x_t \rangle
+		-\frac{\log(n)}{\epsilon} + \sum_{i=1}^n \widetilde x_i( \sum_{t=1}^T(a_t(i) - \epsilon)) \\
+		\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\ge
 		-\frac{\log(n)}{\epsilon} 
-		+ \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T A_i 
+		+ \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T a_t(i)
 		-  \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T \epsilon \\
-		\sum_{t=1}^T \langle A,x_t \rangle
+		\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\ge
 		-\frac{\log(n)}{\epsilon} 
-		+ \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T A_i 
+		+ \sum_{i=1}^n \widetilde x_i \sum_{t=1}^T a_t(i)
 		- T \epsilon \\
-		\sum_{t=1}^T \langle A,x_t \rangle
+		\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\ge
 		-\frac{\log(n)}{\epsilon} 
-		+ T \langle A,\widetilde x_i \rangle
+		+ \sum_{t=1}^T \langle a_t,\widetilde x_i \rangle
 		- T \epsilon \\
-		\sum_{t=1}^T \langle A,x_t \rangle
+		\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\ge
 		-\frac{\log(n)}{\epsilon} 
-		+ T m\eta
+		+ T \eta
 		- T \epsilon \\
-		\sum_{t=1}^T \langle A,x_t \rangle
+		\sum_{t=1}^T \langle a_t,x_t \rangle
 		&\ge
 		-\frac{2\log(n)}{\eta} 
-		+ T m\eta
+		+ T \eta
 		- \frac{T \eta}{2} \\
 	\end{align*}
 	Let the right hand side be 0.
 	\begin{align*}
 		-\frac{2\log(n)}{\eta} 
-		+ T m\eta
+		+ T \eta
 		- \frac{T \eta}{2} 
 		&=
 		0 \\
-		T m\eta
+		T \eta
 		- \frac{T \eta}{2} 
-		&=
-		\frac{2\log(n)}{\eta}  \\
-		T(m\eta - \frac{\eta}{2})
 		&=
 		\frac{2\log(n)}{\eta}  \\
 		T
 		&=
-		\frac{2\log(n)}{\eta^2(m - \frac{1}{2})}  \\	
+		\frac{4\log(n)}{\eta^2}  \\	
 	\end{align*}
 \end{qparts}
 
