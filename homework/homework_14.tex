@@ -1,0 +1,175 @@
+% Search for all the places that say "PUT SOMETHING HERE".
+
+\documentclass[11pt]{article}
+\usepackage{amsmath,textcomp,amssymb,geometry,graphicx,enumerate}
+
+\def\Name{Ran Liao}  % Your name
+\def\SID{3034504227}  % Your student ID number
+\def\Homework{14} % Number of Homework
+\def\Session{Spring 2019}
+
+
+\title{CS170--Spring 2019 --- Homework \Homework\ Solutions}
+\author{\Name, SID \SID}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name}
+\pagestyle{myheadings}
+\date{\today}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+Collaborators:Jingyi Xu, Renee Pu
+
+\section{Study Group}
+	\begin{tabular}{ll}
+		Name		&   SID         		\\\hline
+		Ran Liao		&   3034504227  	\\  
+		Jingyi Xu		&   3032003885  	\\
+		Renee Pu		&   3032083302  	\\
+	\end{tabular}
+
+	
+\newpage
+\section{Convex Hull}
+
+\begin{qparts}
+	\item
+	\textbf{Procedure}
+	
+	while a right turn is needed for the the last two points in \textit{Hull} to reach $p$
+	
+	\qquad remove the last point in \textit{Hull}
+	
+	add $p$ to the end of \textit{Hull}
+	
+	\textbf{Runtime}
+	
+	Each points can be added to  the \textit{Hull} at most once, and can be removed from \textit{Hull} at most once.
+	Therefore, the runtime in the nested loop is $O(n)$. 
+	Since sorting points will cost $O(n\log n)$ time. The overall runtime is $O(n\log n)$.
+	
+	\item
+	
+	\textbf{Reduction}
+	
+	Suppose $x_1, x_2, \dots, x_n$ are the input numbers to sorting algorithm.
+	
+	A reduction $R$ will construct the following points; $(x_1, x_1^2), (x_2, x_2^2), \dots, (x_n, x_n^2)$. And feed it to the convex hull algorithm.
+	
+	 Starting at point produced by convex hull algorithm with most negative x coordinate, counter-clockwise order of hull points yields items in ascending order.
+	 
+	 \textbf{Proof}
+	 
+	 Since all points $R$ construct will lie on the function $f(x) = x^2$. And region $\{x: x^2 \ge x\}$ is convex. Therefore, all points are on convex hull and will be output by the convex full algorithm in counter clock wise order.
+	
+\end{qparts}
+
+
+\newpage
+\section{Decision vs. Search vs. Optimization}
+
+\begin{qparts}
+	\item
+	
+	\textbf{Psudocode}
+	
+	SOLVE-SEARCH-PROBLEM$(G=(V, E), b)$\{
+	
+	\qquad $S \leftarrow$ empty set
+	
+	\qquad $V_r \leftarrow V$
+	
+	\qquad $E_r \leftarrow E$
+		
+	\qquad for $v$ in $V$\{
+	
+	\qquad\qquad $e \leftarrow$ edges that connected by $v$ in $E_r$
+	
+	\qquad\qquad $E^\prime \leftarrow E_r \setminus e$
+	
+	\qquad\qquad $V^\prime \leftarrow V_r \setminus v$
+	
+	\qquad\qquad $G^\prime \leftarrow (V^\prime, E^\prime)$
+	
+	\qquad\qquad if SOLVE-DECISION-PROBLEM$(G^\prime, b-1)$\{
+	
+	\qquad\qquad\qquad $S \leftarrow S \cup v$ 
+	
+	\qquad\qquad\qquad $b \leftarrow b - 1$ 
+	
+	\qquad\qquad\qquad $E_r \leftarrow E^\prime$
+	
+	\qquad\qquad\qquad $V_r \leftarrow V^\prime$
+	
+	\qquad\qquad\qquad if $b == 0$ or $|E_r| == 0$
+	
+	\qquad\qquad\qquad\qquad return $S$
+	
+	\qquad\qquad\}
+	
+	\qquad\}
+	
+	\qquad return $none$
+	
+	\}
+	
+	\textbf{Proof of Correctness}
+	
+	I'd like to prove $S$ will always cover all edges in $E \setminus E_r$.
+	
+	In the beginning, both $S$ and $E \setminus E_r$ are empty. This is trivial.
+	
+	In the middle iteration, all edges in $e$ can be covered by $v$. Therefore, if the remaining edges can be covered with at most $b-1$ vertices, it's safe to add $e$ into $S$. And the above property still holds.
+	
+	Therefore, when the algorithm ends, $S$ will contain a valid vertex cover if solution exists.
+	
+	\textbf{Time Complexity}
+	
+	The black box will be called at most $O(|V|)$ times.
+	
+	\item 
+	
+	We can use binary search idea to identify the minimal vertex cover with search problem black box. We stop when we find there's a vertex cover with size $k$, but there's no vertex cover with size $k-1$. Therefore, $k$ is the optimal vertex cover size. And the search problem black box will give us the actual vertices in vertex cover. Since we use binary search, the black box will be called $O(\log |V|)$ times.
+	
+	
+\end{qparts}
+
+\newpage
+\section{2-SAT and Variants}
+
+\begin{qparts}
+	\item 
+	
+	\textbf{Reduction}
+	
+	Given an instance $G=(V,E)$ for Max-Cut, we construct the following clauses for each edge $e = (u, v) \in E$.
+	\[
+		x_u \lor x_v \qquad \overline{x_u} \lor \overline{x_v}
+	\]
+	
+	\item
+	
+	\textbf{Proof}
+	
+	For each cut in $G$, it's naturally to consider the vertex in one set is assigned with $true$, the other is assigned with $false$. Therefore, if edge $e = (u, v)$ cross between these two sets, both clauses mentioned above will be true. If it doesn't, one of the above clause will be true, the other will be false.
+	Suppose there're $k$ crossing edges. In total, there're $2k + |E| - |k| = |E| + k$ clauses will be satisfied.
+	
+	
+
+\end{qparts}
+
+
+
+
+
+\end{document}
